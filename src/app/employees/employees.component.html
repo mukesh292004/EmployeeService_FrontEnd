@@ -1,0 +1,35 @@
+<div class="container mt-3">
+    <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th>Employee Id</th>
+                <th>Employee Name</th>
+                <th>Employee Salary</th>
+                <th>Employee Designation</th>
+                <th>Date of Joining</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for( employee of employees;track employee.eid) {
+            <tr>
+                <td>{{employee.eid}}</td>
+                <td>{{employee.ename | uppercase}}</td>
+                 <td>{{employee.esal | currency:'INR':'symbol'}}</td> 
+                <td>{{employee.edesg}}</td>
+                <td>{{employee.doj | date:'dd/MM/yyyy'}}</td>
+                <td>
+
+                    <button class="btn btn-primary" (click)="editEmployee(employee)">
+                        <i class="fa-solid fa-pen-to-square"></i></button>
+                    <button class="btn btn-danger" (click)="deleteEmployee(employee)"> 
+                        <i class="fa-solid fa-trash"></i></button>
+                </td>
+            </tr>
+            }
+            @empty{
+            <p class="text-primary">There are no records</p>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,36 @@
+<div class="d-flex flex-column min-vh-100">
+  <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <div class="container-fluid mx-2">
+      <a class="navbar-brand " routerLink="/">EM_Power</a>
+      <ul class="navbar-nav ms-auto">
+        @if(loginstatus) {
+        <li class="nav-item">
+          <a class="nav-link active" routerLink="/login" (click)="login()">LOGIN</a>
+        </li>
+        }
+        <li class="nav-item">
+          <a class="nav-link active" routerLink="/register">REGISTRATION</a>
+        </li>
+        @if(!loginstatus) {
+        <li class="nav-item">
+          <a class="nav-link active" routerLink="/employees">EMPLOYEES</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active mx-2" (click)="logout()">
+            <i class="fa-solid fa-right-to-bracket"></i>LOGOUT
+          </a>
+        </li>
+        }
+      </ul>
+    </div>
+  </nav>
+
+  
+  <div class="flex-grow-1">
+    <router-outlet></router-outlet>
+  </div>
+
+  <footer class="bg-dark text-white text-center py-3">
+    &copy; 2025 EM_Power. All rights reserved.
+  </footer>
+</div>
