@@ -1,35 +1,120 @@
 <div class="container mt-3">
-    <table class="table table-dark table-striped">
-        <thead>
-            <tr>
-                <th>Employee Id</th>
-                <th>Employee Name</th>
-                <th>Employee Salary</th>
-                <th>Employee Designation</th>
-                <th>Date of Joining</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for( employee of employees;track employee.eid) {
-            <tr>
-                <td>{{employee.eid}}</td>
-                <td>{{employee.ename | uppercase}}</td>
-                 <td>{{employee.esal | currency:'INR':'symbol'}}</td> 
-                <td>{{employee.edesg}}</td>
-                <td>{{employee.doj | date:'dd/MM/yyyy'}}</td>
-                <td>
+  <h2 class="text-center text-primary mb-4">Employee Management</h2>
+  <div class="text-end mb-3">
+    <button class="btn btn-success" (click)="openAddModal()">
+      <i class="fa-solid fa-plus"></i> Add Employee
+    </button>
+  </div>
+  <table class="table table-dark table-striped">
+    <thead>
+      <tr>
+        <th>Employee ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Department</th>
+        <th>Contact</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let employee of employees; trackBy: trackById">
+        <td>{{ employee.id }}</td>
+        <td>{{ employee.name | uppercase }}</td>
+        <td>{{ employee.email }}</td>
+        <td>{{ employee.role }}</td>
+        <td>{{ employee.department }}</td>
+        <td>{{ employee.contact }}</td>
+        <td>
+          <button class="btn btn-primary" (click)="openEditModal(employee)">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </button>
+          <button class="btn btn-danger" (click)="deleteEmployee(employee)">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="employees.length === 0">
+        <td colspan="7" class="text-center text-primary">There are no records</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-                    <button class="btn btn-primary" (click)="editEmployee(employee)">
-                        <i class="fa-solid fa-pen-to-square"></i></button>
-                    <button class="btn btn-danger" (click)="deleteEmployee(employee)"> 
-                        <i class="fa-solid fa-trash"></i></button>
-                </td>
-            </tr>
-            }
-            @empty{
-            <p class="text-primary">There are no records</p>
-            }
-        </tbody>
-    </table>
+<div class="modal" [class.show]="isModalOpen" [style.display]="isModalOpen ? 'block' : 'none'">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Employee</h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form *ngIf="selectedEmployee">
+          <div class="mb-3">
+            <label for="employeeName" class="form-label">Name</label>
+            <input type="text" id="employeeName" class="form-control" [(ngModel)]="selectedEmployee.name" name="name">
+          </div>
+          <div class="mb-3">
+            <label for="employeeRole" class="form-label">Role</label>
+            <input type="text" id="employeeRole" class="form-control" [(ngModel)]="selectedEmployee.role" name="role">
+          </div>
+          <div class="mb-3">
+            <label for="employeeDepartment" class="form-label">Department</label>
+            <input type="text" id="employeeDepartment" class="form-control" [(ngModel)]="selectedEmployee.department"
+              name="department">
+          </div>
+          <div class="mb-3">
+            <label for="employeeContact" class="form-label">Contact</label>
+            <input type="text" id="employeeContact" class="form-control" [(ngModel)]="selectedEmployee.contact"
+              name="contact">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+        <button type="button" class="btn btn-primary" (click)="updateEmployee()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" [class.show]="isAddModalOpen" [style.display]="isAddModalOpen ? 'block' : 'none'">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Employee</h5>
+        <button type="button" class="btn-close" (click)="closeAddModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="newEmployeeName" class="form-label">Name</label>
+            <input type="text" id="newEmployeeName" class="form-control" [(ngModel)]="newEmployee.name" name="name">
+          </div>
+          <div class="mb-3">
+            <label for="newEmployeeEmail" class="form-label">Email</label>
+            <input type="email" id="newEmployeeEmail" class="form-control" [(ngModel)]="newEmployee.email" name="email">
+          </div>
+          <div class="mb-3">
+            <label for="newEmployeeRole" class="form-label">Role</label>
+            <input type="text" id="newEmployeeRole" class="form-control" [(ngModel)]="newEmployee.role" name="role">
+          </div>
+          <div class="mb-3">
+            <label for="newEmployeeDepartment" class="form-label">Department</label>
+            <input type="text" id="newEmployeeDepartment" class="form-control" [(ngModel)]="newEmployee.department"
+              name="department">
+          </div>
+          <div class="mb-3">
+            <label for="newEmployeeContact" class="form-label">Contact</label>
+            <input type="text" id="newEmployeeContact" class="form-control" [(ngModel)]="newEmployee.contact"
+              name="contact">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeAddModal()">Close</button>
+        <button type="button" class="btn btn-success" (click)="addEmployee()">Add Employee</button>
+      </div>
+    </div>
+  </div>
 </div>

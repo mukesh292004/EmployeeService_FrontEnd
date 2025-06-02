@@ -15,21 +15,21 @@
     <!-- Features Section -->
     <div id="features" class="row text-center g-4">
       <div class="col-lg-4">
-        <div class="p-4 border rounded shadow-sm h-100">
+        <div class="p-4 border rounded shadow-sm h-100" (click)="navigateTo('attendance')" style="cursor: pointer;">
           <img src="https://img.icons8.com/ios-filled/100/attendance-mark.png" alt="Attendance Icon" class="mb-3" width="60">
           <h5 class="text-primary">Attendance Tracking</h5>
           <p class="text-muted">Real-time check-ins and check-outs with detailed logs and analytics.</p>
         </div>
       </div>
       <div class="col-lg-4">
-        <div class="p-4 border rounded shadow-sm h-100">
+        <div class="p-4 border rounded shadow-sm h-100" (click)="navigateTo('shift-management')" style="cursor: pointer;">
           <img src="https://img.icons8.com/ios-filled/100/shift.png" alt="Shift Icon" class="mb-3" width="60">
           <h5 class="text-primary">Shift Management</h5>
           <p class="text-muted">Assign, rotate, and manage shifts with ease and flexibility.</p>
         </div>
       </div>
       <div class="col-lg-4">
-        <div class="p-4 border rounded shadow-sm h-100">
+        <div class="p-4 border rounded shadow-sm h-100" (click)="navigateTo('leave-requests')" style="cursor: pointer;">
           <img src="https://img.icons8.com/ios-filled/100/leave.png" alt="Leave Icon" class="mb-3" width="60">
           <h5 class="text-primary">Leave Requests</h5>
           <p class="text-muted">Simplify leave applications, approvals, and balance tracking.</p>
@@ -37,4 +37,3 @@
       </div>
     </div>
   </div>
-  

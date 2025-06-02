@@ -1,54 +1,147 @@
-import { CurrencyPipe, DatePipe, UpperCasePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common'; // Import CommonModule
+import { FormsModule } from '@angular/forms';
+import { DatePipe, UpperCasePipe } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { UserService, Employee, UpdateEmployeePayload } from '../userservice.service';
 
 @Component({
   selector: 'app-employees',
-  imports: [UpperCasePipe,DatePipe,CurrencyPipe],
   standalone: true,
+  imports: [CommonModule, FormsModule, UpperCasePipe, DatePipe], // Add CommonModule here
   templateUrl: './employees.component.html',
   styleUrls: ['./employees.component.css']
 })
-export class EmployeesComponent {
+export class EmployeesComponent implements OnInit {
   orgName = "Cognizant";
-  employees: Employee[];
+  employees: Employee[] = [];
+  isModalOpen = false;
+  selectedEmployee: Employee | null = null;
+  isAddModalOpen = false; // Track the state of the Add Employee modal
+  newEmployee: Partial<Employee> = {}; // Temporary object for new employee data
 
-  constructor() {
-    this.employees = [
-      new Employee(1, "suresh", 9000, "Developer",new Date("2025/05/22")),
-      new Employee(2, "naresh", 14000, "Hr",new Date("2025/05/22")),
-      new Employee(3, "ramesh", 21000, "Admin",new Date("2025/05/22")),
-      new Employee(4, "rajesh", 26500, "TL",new Date("2025/05/22"))
-    ];
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+    this.loadEmployees();
   }
 
-  deleteEmployee(emp: Employee) {
-    console.log("Employee info", emp.eid);
-    const confirmDelete = confirm("Are you sure you want to delete this employee?");
-    if (confirmDelete) {
-      const index = this.employees.indexOf(emp);
-      if (index !== -1) {
-        this.employees.splice(index, 1);
-        alert("Employee Deleted");
+  loadEmployees(): void {
+    this.userService.getEmployees().subscribe({
+      next: (data) => {
+        this.employees = data;
+        console.log("Employees loaded", this.employees);
+      },
+      error: (err) => {
+        console.error("Error loading employees", err);
+        alert("Failed to load employees. Please try again later.");
       }
+    });
+  }
+
+  deleteEmployee(emp: Employee): void {
+    const confirmDelete = confirm(`Are you sure you want to delete employee ${emp.name}?`);
+    if (confirmDelete) {
+      this.userService.deleteEmployee(emp.id).subscribe({
+        next: () => {
+          const index = this.employees.indexOf(emp);
+          if (index !== -1) {
+            this.employees.splice(index, 1); // Remove the employee from the local list
+          }
+          // Optionally, you can reload the employees list
+          this.loadEmployees(); // Uncomment if you want to reload the list from the server
+          alert("Employee deleted successfully!");
+
+        },
+        error: (err) => {
+          console.error("Failed to delete employee", err);
+          alert("Failed to delete employee. Please try again later.");
+        }
+      });
     }
   }
-  
 
-  editEmployee(emp: Employee) {
-    emp.ename = prompt("Enter new name", emp.ename) || emp.ename;
-    emp.esal = parseFloat(prompt("Enter new salary", emp.esal.toString()) || emp.esal.toString());
-    emp.edesg = prompt("Enter new designation", emp.edesg) || emp.edesg;
-    this.employees = [...this.employees]; 
-    alert("Employee Edited");
+  openEditModal(emp: Employee): void {
+    this.selectedEmployee = { ...emp }; // Clone the employee object
+    this.isModalOpen = true;
   }
-}
 
-class Employee {
-  constructor(
-    public eid: number,
-    public ename: string,
-    public esal: number,
-    public edesg: string,
-    public doj: Date
-  ) {}
+  openAddModal(): void {
+    this.newEmployee = {
+      name: '',
+      email: '',
+      role: '',
+      department: '',
+      contact: ''
+    };
+    this.isAddModalOpen = true;
+  }
+
+  closeAddModal(): void {
+    this.isAddModalOpen = false;
+    this.newEmployee = {};
+  }
+
+  addEmployee(): void {
+    if (this.newEmployee.name?.trim() && this.newEmployee.email?.trim() && this.newEmployee.role?.trim() && 
+        this.newEmployee.department?.trim() && this.newEmployee.contact?.trim()) {
+      const payload: UpdateEmployeePayload = {
+        name: this.newEmployee.name.trim(),
+        email: this.newEmployee.email.trim(),
+        role: this.newEmployee.role.trim(),
+        department: this.newEmployee.department.trim(),
+        contact: this.newEmployee.contact.trim()
+      };
+
+      this.userService.saveEmployee(payload).subscribe({
+        next: () => {
+          alert("New employee added successfully!");
+          this.closeAddModal();
+          this.loadEmployees(); // Reload the employees list after successful save
+        },
+        error: (err) => {
+          console.error("Failed to add new employee", err);
+          alert("Failed to add new employee. Please try again later.");
+        }
+      });
+    } else {
+      alert("All fields are required. Please fill in all fields before saving.");
+    }
+  }
+
+  closeModal(): void {
+    this.isModalOpen = false;
+    this.selectedEmployee = null;
+  }
+ 
+  updateEmployee(): void {
+    if (this.selectedEmployee) {
+      // Create an UpdateEmployeePayload object excluding the id
+      const updatePayload = {
+        name: this.selectedEmployee.name,
+        email: this.selectedEmployee.email,
+        role: this.selectedEmployee.role,
+        department: this.selectedEmployee.department,
+        contact: this.selectedEmployee.contact
+      };
+  
+      this.userService.updateEmployee(this.selectedEmployee.id, updatePayload).subscribe({
+        next: (updatedEmployee) => {
+          const index = this.employees.findIndex(e => e.id === this.selectedEmployee!.id);
+          if (index !== -1) {
+            this.employees[index] = { ...this.selectedEmployee, ...updatedEmployee }; // Update local list
+          }
+          alert("Employee details updated successfully!");
+          this.closeModal();
+        },
+        error: (err) => {
+          console.error("Failed to update employee", err);
+          alert("Failed to update employee. Please try again later.");
+        }
+      });
+    }
+  }
+
+  trackById(index: number, employee: Employee): number {
+    return employee.id;
+  }
 }

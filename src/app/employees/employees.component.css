@@ -1,0 +1,32 @@
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1050;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(46, 43, 43, 0.2);
+    border-radius: 8px;
+    width: 500px;
+    height: auto;
+    max-height: 80vh;
+    display: none;
+  }
+  
+  .modal.show {
+    display: block;
+  }
+  
+  .modal-dialog {
+    margin: 0;
+  }
+  
+  .modal-header,
+  .modal-footer {
+    border-bottom: 1px solid #dee2e6;
+    border-top: 1px solid #dee2e6;
+  }
+  
+  .modal-title {
+    font-weight: bold;
+  }

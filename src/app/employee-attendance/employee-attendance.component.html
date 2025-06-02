@@ -1,0 +1,280 @@
+<div class="container py-4">
+  <h2 class="text-center mb-4">Attendance Management</h2>
+
+  <!-- Timesheet Card -->
+  <div class="card shadow mx-auto" style="max-width: 400px;">
+    <div class="card-body text-center">
+      <h5 class="card-title text-primary">Timesheet</h5>
+      <p class="card-text text-muted">{{ todayDate }}</p>
+
+      <div class="my-3">
+        <p class="mb-1"><strong>Punch In at:</strong></p>
+        <p class="text-muted">{{ clockInTime }}</p>
+      </div>
+
+      <div class="my-3">
+        <p class="mb-1"><strong>Punch Out at:</strong></p>
+        <p class="text-muted">{{ clockOutTime }}</p>
+      </div>
+
+      <div class="my-3">
+        <div class="progress-circle mx-auto" style="width: 100px; height: 100px; position: relative;">
+          <svg viewBox="0 0 36 36" class="circular-chart blue">
+            <path
+              class="circle"
+              [attr.stroke-dasharray]="workHoursPercentage + ', 100'"
+              d="M18 2.0845
+                 a 15.9155 15.9155 0 0 1 0 31.831
+                 a 15.9155 15.9155 0 0 1 0 -31.831"
+            />
+          </svg>
+          <div class="progress-text" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+            <strong>{{ workHours }}</strong> hrs
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!completed">
+        <button
+          class="btn"
+          [ngClass]="{
+            'btn-success': !clockedIn,
+            'btn-danger': clockedIn
+          }"
+          (click)="toggleClockIn()"
+        >
+          {{ clockedIn ? 'Log Out' : 'Log In' }}
+        </button>
+      </div>
+      <div *ngIf="completed">
+        <span class="badge bg-success" style="font-size: 1.1rem; padding: 10px 24px;">DONE</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Card -->
+  <div class="card shadow mx-auto mt-4" style="max-width: 400px;">
+    <div class="card-body">
+      <h5 class="card-title text-primary mb-3">Statistics</h5>
+
+      <!-- Today -->
+      <div class="stat-row mb-3">
+        <div class="d-flex justify-content-between">
+          <span>Today</span>
+          <span><strong>{{ workHours || 0 }}</strong> / 10 hrs</span>
+        </div>
+        <div class="progress stat-progress">
+          <div class="progress-bar bg-info" role="progressbar"
+            [style.width.%]="(workHours / 10) * 100"></div>
+        </div>
+      </div>
+
+      <!-- This Week -->
+      <div class="stat-row mb-3">
+        <div class="d-flex justify-content-between">
+          <span>This Week</span>
+          <span><strong>{{ weeklyHours || 0 }}</strong> / 50 hrs</span>
+        </div>
+        <div class="progress stat-progress">
+          <div class="progress-bar bg-danger" role="progressbar"
+            [style.width.%]="(weeklyHours / 50) * 100"></div>
+        </div>
+      </div>
+
+      <!-- This Month -->
+      <div class="stat-row mb-3">
+        <div class="d-flex justify-content-between">
+          <span>This Month</span>
+          <span><strong>{{ monthlyReport.totalHours || 0 }}</strong> / 200 hrs</span>
+        </div>
+        <div class="progress stat-progress">
+          <div class="progress-bar bg-warning" role="progressbar"
+            [style.width.%]="(monthlyReport.totalHours / 200) * 100"></div>
+        </div>
+      </div>
+
+      <!-- Remaining -->
+      <div class="stat-row mb-3">
+        <div class="d-flex justify-content-between">
+          <span>Remaining</span>
+          <span><strong>{{ 200 - (monthlyReport.totalHours || 0) }}</strong> / 200 hrs</span>
+        </div>
+        <div class="progress stat-progress">
+          <div class="progress-bar bg-primary" role="progressbar"
+            [style.width.%]="((200 - (monthlyReport.totalHours || 0)) / 200) * 100"></div>
+        </div>
+      </div>
+
+      <!-- Overtime -->
+      <div class="stat-row">
+        <div class="d-flex justify-content-between">
+          <span>Overtime</span>
+          <span><strong>{{ monthlyReport.overtime || 0 }}</strong> hrs</span>
+        </div>
+        <div class="progress stat-progress">
+          <div class="progress-bar bg-warning" role="progressbar"
+            [style.width.%]="(monthlyReport.overtime || 0)"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+  <!-- Weekly Working Hours Chart (ApexCharts only) -->
+  <div class="card shadow mx-auto mt-4" style="max-width: 600px; background: #000;">
+    <div class="card-body" style="background: #000; border-radius: 12px;">
+      <apx-chart
+        [series]="apexSeries"
+        [chart]="apexChartOptions.chart"
+        [xaxis]="apexChartOptions.xaxis"
+        [yaxis]="apexChartOptions.yaxis"
+        [stroke]="apexChartOptions.stroke"
+        [dataLabels]="apexChartOptions.dataLabels"
+        [markers]="apexChartOptions.markers"
+        [tooltip]="apexChartOptions.tooltip"
+        [grid]="apexChartOptions.grid"
+        [plotOptions]="apexChartOptions.plotOptions"
+        style="color: #00ff00; min-height: 300px;">
+      </apx-chart>
+      <div class="text-success mt-3" style="color: #00ff00 !important;">
+        <div style="font-weight: 600;">Weekly Working Hours</div>
+        <div style="font-size: 0.95rem; opacity: 0.8;">Monday to Friday</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monthly Attendance Report -->
+  <div class="mt-4">
+    <h3 class="text-center">Monthly Attendance Report</h3>
+    <p><strong>Present Days:</strong> {{ monthlyReport.presentDays || 0 }}</p>
+    <p><strong>Absent Days:</strong> {{ monthlyReport.absentDays || 0 }}</p>
+    <p><strong>Average Working Hours:</strong> {{ monthlyReport.averageWorkingHours || 0 }} hrs</p>
+    <p><strong>Min Working Hours:</strong> {{ monthlyReport.minWorkingHours || 0 }} hrs</p>
+    <p><strong>Max Working Hours:</strong> {{ monthlyReport.maxWorkingHours || 0 }} hrs</p>
+  </div>
+
+  <div class="mt-4">
+    <h3 class="text-center">Monthly Attendance Report</h3>
+    <div *ngFor="let week of monthlyReport.weeks" class="card shadow mx-auto mt-3" style="max-width: 800px;">
+      <div class="card-body">
+        <h5 class="card-title text-primary">Week {{ week.week }}</h5>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Clock In</th>
+              <th>Clock Out</th>
+              <th>Work Hours</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let day of week.days">
+              <td>{{ day.date }}</td>
+              <td>{{ day.clockIn }}</td>
+              <td>{{ day.clockOut }}</td>
+              <td>{{ day.workHours }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Attendance History -->
+  <div class="mt-4">
+    <h3 class="text-center">Attendance History</h3>
+    <table *ngIf="attendanceHistory.length > 0" class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Clock In</th>
+          <th>Clock Out</th>
+          <th>Work Hours</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let record of attendanceHistory">
+          <td>{{ record.date }}</td>
+          <td>{{ record.clockIn | date: 'shortTime' }}</td>
+          <td>{{ record.clockOut | date: 'shortTime' }}</td>
+          <td>{{ record.workHours }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="attendanceHistory.length === 0" class="text-center">No attendance history available.</p>
+  </div>
+
+  <!-- New Attendance Section -->
+  <div class="attendance-container">
+    <!-- Month Navigation -->
+    <div class="month-nav">
+      <button class="nav-btn"></button>
+      <span class="month-title">{{ currentMonth }}</span>
+      <button class="nav-btn">></button>
+    </div>
+
+    <!-- Averages Section -->
+    <div class="averages-section">
+      <div class="avg-box">
+        <span>Month Avg.</span>
+        <div class="time">{{ monthAvg }}</div>
+      </div>
+      <div class="avg-box">
+        <span>Year Avg.</span>
+        <div class="time">{{ yearAvg }}</div>
+      </div>
+    </div>
+
+    <!-- Fortnight Averages -->
+    <div class="fortnight-section">
+      <div class="fortnight">
+        <span>1st Fortnight Avg.</span>
+        <div class="time">{{ firstFortnightAvg }}</div>
+      </div>
+      <div class="fortnight">
+        <span>2nd Fortnight Avg.</span>
+        <div class="time">{{ secondFortnightAvg }}</div>
+      </div>
+    </div>
+
+    <!-- Time Bars Graph -->
+    <div class="time-bars">
+      <div class="hours-scale">10hr</div>
+      <div class="bars-container">
+        <!-- Generate bars dynamically -->
+        <div *ngFor="let record of dailyRecords" 
+             class="day-bar" 
+             [ngClass]="record.status">
+          <div class="bar" [style.height]="calculateBarHeight(record.time)"></div>
+          <div class="date">{{ record.date }}</div>
+          <div class="day">{{ record.day }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly Averages -->
+    <div class="weekly-averages">
+      <div *ngFor="let week of weeklyAverages" class="week-avg">
+        <span>Week {{ week.week }}</span>
+        <div class="time">{{ week.avg }}</div>
+      </div>
+    </div>
+
+    <!-- Daily Details -->
+    <div class="daily-details">
+      <div *ngFor="let record of dailyRecords" class="day-detail">
+        <div class="day-header">
+          <span>{{ record.day }}, {{ record.date }}</span>
+          <span class="time">{{ record.time }}</span>
+        </div>
+        <div class="time-details">
+          <div class="clock-time">
+            <span>{{ record.clockIn }}</span>
+            <span>{{ record.clockOut }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

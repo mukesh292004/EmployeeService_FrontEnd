@@ -5,7 +5,7 @@
       <ul class="navbar-nav ms-auto">
         @if(loginstatus) {
         <li class="nav-item">
-          <a class="nav-link active" routerLink="/login" (click)="login()">LOGIN</a>
+          <a class="nav-link active" routerLink="/login">LOGIN</a>
         </li>
         }
         <li class="nav-item">
@@ -13,7 +13,7 @@
         </li>
         @if(!loginstatus) {
         <li class="nav-item">
-          <a class="nav-link active" routerLink="/employees">EMPLOYEES</a>
+          <a class="nav-link active">EMPLOYEES</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active mx-2" (click)="logout()">
