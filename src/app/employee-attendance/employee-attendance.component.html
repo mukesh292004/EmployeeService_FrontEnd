@@ -1,277 +1,448 @@
-<div class="container py-4">
-  <h2 class="text-center mb-4">Attendance Management</h2>
-
-  <!-- Timesheet Card -->
-  <div class="card shadow mx-auto" style="max-width: 400px;">
-    <div class="card-body text-center">
-      <h5 class="card-title text-primary">Timesheet</h5>
-      <p class="card-text text-muted">{{ todayDate }}</p>
-
-      <div class="my-3">
-        <p class="mb-1"><strong>Punch In at:</strong></p>
-        <p class="text-muted">{{ clockInTime }}</p>
+<div class="erp-dashboard">
+  <!-- Top Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark-custom shadow-lg">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand fw-bold" href="#">
+        <i class="fas fa-building me-2 text-primary"></i>
+        ERP <span class="text-primary">Dashboard</span>
+      </a>
+      <div class="navbar-nav ms-auto d-flex flex-row align-items-center">
+        <div class="nav-item me-3">
+          <button class="btn btn-outline-primary btn-sm">
+            <i class="fas fa-bell me-1"></i>
+            <span class="badge bg-danger rounded-pill ms-1">3</span>
+          </button>
+        </div>
+        <div class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button">
+            <img src="https://via.placeholder.com/32" class="rounded-circle me-2" alt="Profile">
+            <span>Employee {{ userId }}</span>
+          </a>
+        </div>
       </div>
+    </div>
+  </nav>
 
-      <div class="my-3">
-        <p class="mb-1"><strong>Punch Out at:</strong></p>
-        <p class="text-muted">{{ clockOutTime }}</p>
+  <div class="container-fluid px-4 py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb bg-dark-card p-3 rounded shadow-sm">
+        <li class="breadcrumb-item"><a href="#" class="text-primary text-decoration-none">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="#" class="text-primary text-decoration-none">HR Management</a></li>
+        <li class="breadcrumb-item active text-light">Attendance Analytics</li>
+      </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 mb-0 text-light fw-bold">Attendance Management System</h1>
+        <p class="text-muted mb-0">Real-time monitoring and analytics dashboard</p>
       </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-info btn-sm">
+          <i class="fas fa-download me-1"></i>Export Report
+        </button>
+        <button class="btn btn-primary btn-sm">
+          <i class="fas fa-sync-alt me-1"></i>Refresh
+        </button>
+      </div>
+    </div>
 
-      <div class="my-3">
-        <div class="progress-circle mx-auto" style="width: 100px; height: 100px; position: relative;">
-          <svg viewBox="0 0 36 36" class="circular-chart blue">
-            <path
-              class="circle"
-              [attr.stroke-dasharray]="workHoursPercentage + ', 100'"
-              d="M18 2.0845
-                 a 15.9155 15.9155 0 0 1 0 31.831
-                 a 15.9155 15.9155 0 0 1 0 -31.831"
-            />
-          </svg>
-          <div class="progress-text" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-            <strong>{{ workHours }}</strong> hrs
+    <!-- KPI Summary Cards -->
+    <div class="row g-3 mb-4">
+      <!-- Employee ID Card -->
+      <div class="col-xl-2 col-lg-4 col-md-6">
+        <div class="kpi-card bg-gradient-primary">
+          <div class="card-body text-center">
+            <div class="icon-wrapper mb-3">
+              <i class="fas fa-id-badge"></i>
+            </div>
+            <h6 class="card-title text-white mb-1">Employee ID</h6>
+            <div class="metric-value text-white">{{ userId }}</div>
+            <div class="metric-change text-white-50">
+              <i class="fas fa-user"></i> Active
+            </div>
           </div>
         </div>
       </div>
 
-      <div *ngIf="!completed">
-        <button
-          class="btn"
-          [ngClass]="{
-            'btn-success': !clockedIn,
-            'btn-danger': clockedIn
-          }"
-          (click)="toggleClockIn()"
-        >
-          {{ clockedIn ? 'Log Out' : 'Log In' }}
-        </button>
-      </div>
-      <div *ngIf="completed">
-        <span class="badge bg-success" style="font-size: 1.1rem; padding: 10px 24px;">DONE</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Statistics Card -->
-  <div class="card shadow mx-auto mt-4" style="max-width: 400px;">
-    <div class="card-body">
-      <h5 class="card-title text-primary mb-3">Statistics</h5>
-
-      <!-- Today -->
-      <div class="stat-row mb-3">
-        <div class="d-flex justify-content-between">
-          <span>Today</span>
-          <span><strong>{{ workHours || 0 }}</strong> / 10 hrs</span>
-        </div>
-        <div class="progress stat-progress">
-          <div class="progress-bar bg-info" role="progressbar"
-            [style.width.%]="(workHours / 10) * 100"></div>
+      <!-- Present Days -->
+      <div class="col-xl-2 col-lg-4 col-md-6">
+        <div class="kpi-card bg-gradient-success">
+          <div class="card-body text-center">
+            <div class="icon-wrapper mb-3">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <h6 class="card-title text-white mb-1">Present Days</h6>
+            <div class="metric-value text-white">{{ monthlyReport.presentDays || 0 }}</div>
+            <div class="metric-change text-white-50">
+              <i class="fas fa-arrow-up"></i> +15% this month
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- This Week -->
-      <div class="stat-row mb-3">
-        <div class="d-flex justify-content-between">
-          <span>This Week</span>
-          <span><strong>{{ weeklyHours || 0 }}</strong> / 50 hrs</span>
-        </div>
-        <div class="progress stat-progress">
-          <div class="progress-bar bg-danger" role="progressbar"
-            [style.width.%]="(weeklyHours / 50) * 100"></div>
-        </div>
-      </div>
-
-      <!-- This Month -->
-      <div class="stat-row mb-3">
-        <div class="d-flex justify-content-between">
-          <span>This Month</span>
-          <span><strong>{{ monthlyReport.totalHours || 0 }}</strong> / 200 hrs</span>
-        </div>
-        <div class="progress stat-progress">
-          <div class="progress-bar bg-warning" role="progressbar"
-            [style.width.%]="(monthlyReport.totalHours / 200) * 100"></div>
+      <!-- Absent Days -->
+      <div class="col-xl-2 col-lg-4 col-md-6">
+        <div class="kpi-card bg-gradient-danger">
+          <div class="card-body text-center">
+            <div class="icon-wrapper mb-3">
+              <i class="fas fa-calendar-times"></i>
+            </div>
+            <h6 class="card-title text-white mb-1">Absent Days</h6>
+            <div class="metric-value text-white">{{ monthlyReport.absentDays || 0 }}</div>
+            <div class="metric-change text-white-50">
+              <i class="fas fa-arrow-down"></i> -5% from last month
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Remaining -->
-      <div class="stat-row mb-3">
-        <div class="d-flex justify-content-between">
-          <span>Remaining</span>
-          <span><strong>{{ 200 - (monthlyReport.totalHours || 0) }}</strong> / 200 hrs</span>
+      <!-- Average Hours -->
+      <div class="col-xl-2 col-lg-4 col-md-6">
+        <div class="kpi-card bg-gradient-info">
+          <div class="card-body text-center">
+            <div class="icon-wrapper mb-3">
+              <i class="fas fa-clock"></i>
+            </div>
+            <h6 class="card-title text-white mb-1">Avg Hours</h6>
+            <div class="metric-value text-white">{{ monthlyReport.averageWorkingHours || 0 }}h</div>
+            <div class="metric-progress">
+              <div class="progress progress-white">
+                <div class="progress-bar" [style.width.%]="(monthlyReport.averageWorkingHours / 8) * 100"></div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="progress stat-progress">
-          <div class="progress-bar bg-primary" role="progressbar"
-            [style.width.%]="((200 - (monthlyReport.totalHours || 0)) / 200) * 100"></div>
+      </div>
+
+      <!-- Total Hours -->
+      <div class="col-xl-2 col-lg-4 col-md-6">
+        <div class="kpi-card bg-gradient-warning">
+          <div class="card-body text-center">
+            <div class="icon-wrapper mb-3">
+              <i class="fas fa-hourglass-half"></i>
+            </div>
+            <h6 class="card-title text-dark mb-1">Total Hours</h6>
+            <div class="metric-value text-dark">{{ monthlyReport.totalHours || 0 }}h</div>
+            <div class="metric-change text-dark">
+              <i class="fas fa-target"></i> {{ ((monthlyReport.totalHours / 200) * 100) || 0 }}% of target
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Overtime -->
-      <div class="stat-row">
-        <div class="d-flex justify-content-between">
-          <span>Overtime</span>
-          <span><strong>{{ monthlyReport.overtime || 0 }}</strong> hrs</span>
-        </div>
-        <div class="progress stat-progress">
-          <div class="progress-bar bg-warning" role="progressbar"
-            [style.width.%]="(monthlyReport.overtime || 0)"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  
-
-  <!-- Weekly Working Hours Chart (ApexCharts only) -->
-  <div class="card shadow mx-auto mt-4" style="max-width: 600px; background: #000;">
-    <div class="card-body" style="background: #000; border-radius: 12px;">
-      <apx-chart
-        [series]="apexSeries"
-        [chart]="apexChartOptions.chart"
-        [xaxis]="apexChartOptions.xaxis"
-        [yaxis]="apexChartOptions.yaxis"
-        [stroke]="apexChartOptions.stroke"
-        [dataLabels]="apexChartOptions.dataLabels"
-        [markers]="apexChartOptions.markers"
-        [tooltip]="apexChartOptions.tooltip"
-        [grid]="apexChartOptions.grid"
-        [plotOptions]="apexChartOptions.plotOptions"
-        style="color: #00ff00; min-height: 300px;">
-      </apx-chart>
-      <div class="text-success mt-3" style="color: #00ff00 !important;">
-        <div style="font-weight: 600;">Weekly Working Hours</div>
-        <div style="font-size: 0.95rem; opacity: 0.8;">Monday to Friday</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Monthly Attendance Report -->
-  <div class="mt-4">
-    <h3 class="text-center">Monthly Attendance Report</h3>
-    <p><strong>Present Days:</strong> {{ monthlyReport.presentDays || 0 }}</p>
-    <p><strong>Absent Days:</strong> {{ monthlyReport.absentDays || 0 }}</p>
-    <p><strong>Average Working Hours:</strong> {{ monthlyReport.averageWorkingHours || 0 }} hrs</p>
-    <p><strong>Min Working Hours:</strong> {{ monthlyReport.minWorkingHours || 0 }} hrs</p>
-    <p><strong>Max Working Hours:</strong> {{ monthlyReport.maxWorkingHours || 0 }} hrs</p>
-  </div>
-
-  <div class="mt-4">
-    <h3 class="text-center">Monthly Attendance Report</h3>
-    <div *ngFor="let week of monthlyReport.weeks" class="card shadow mx-auto mt-3" style="max-width: 800px;">
-      <div class="card-body">
-        <h5 class="card-title text-primary">Week {{ week.week }}</h5>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Clock In</th>
-              <th>Clock Out</th>
-              <th>Work Hours</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let day of week.days">
-              <td>{{ day.date }}</td>
-              <td>{{ day.clockIn }}</td>
-              <td>{{ day.clockOut }}</td>
-              <td>{{ day.workHours }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- Attendance History -->
-  <div class="mt-4">
-    <h3 class="text-center">Attendance History</h3>
-    <table *ngIf="attendanceHistory.length > 0" class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Clock In</th>
-          <th>Clock Out</th>
-          <th>Work Hours</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let record of attendanceHistory">
-          <td>{{ record.date }}</td>
-          <td>{{ record.clockIn | date: 'shortTime' }}</td>
-          <td>{{ record.clockOut | date: 'shortTime' }}</td>
-          <td>{{ record.workHours }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <p *ngIf="attendanceHistory.length === 0" class="text-center">No attendance history available.</p>
-  </div>
-
-  <!-- New Attendance Section -->
-  <div class="attendance-container">
-    <!-- Month Navigation -->
-    <div class="month-nav">
-      <button class="nav-btn"></button>
-      <span class="month-title">{{ currentMonth }}</span>
-      <button class="nav-btn">></button>
-    </div>
-
-    <!-- Averages Section -->
-    <div class="averages-section">
-      <div class="avg-box">
-        <span>Month Avg.</span>
-        <div class="time">{{ monthAvg }}</div>
-      </div>
-      <div class="avg-box">
-        <span>Year Avg.</span>
-        <div class="time">{{ yearAvg }}</div>
-      </div>
-    </div>
-
-    <!-- Fortnight Averages -->
-    <div class="fortnight-section">
-      <div class="fortnight">
-        <span>1st Fortnight Avg.</span>
-        <div class="time">{{ firstFortnightAvg }}</div>
-      </div>
-      <div class="fortnight">
-        <span>2nd Fortnight Avg.</span>
-        <div class="time">{{ secondFortnightAvg }}</div>
-      </div>
-    </div>
-
-    <!-- Time Bars Graph -->
-    <div class="time-bars">
-      <div class="hours-scale">10hr</div>
-      <div class="bars-container">
-        <!-- Generate bars dynamically -->
-        <div *ngFor="let record of dailyRecords" 
-             class="day-bar" 
-             [ngClass]="record.status">
-          <div class="bar" [style.height]="calculateBarHeight(record.time)"></div>
-          <div class="date">{{ record.date }}</div>
-          <div class="day">{{ record.day }}</div>
+      <div class="col-xl-2 col-lg-4 col-md-6">
+        <div class="kpi-card bg-gradient-purple">
+          <div class="card-body text-center">
+            <div class="icon-wrapper mb-3">
+              <i class="fas fa-clock-rotate-left"></i>
+            </div>
+            <h6 class="card-title text-white mb-1">Overtime</h6>
+            <div class="metric-value text-white">{{ monthlyReport.overtime || 0 }}h</div>
+            <div class="metric-change text-white-50">
+              <i class="fas fa-exclamation-triangle"></i> Monitor
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Weekly Averages -->
-    <div class="weekly-averages">
-      <div *ngFor="let week of weeklyAverages" class="week-avg">
-        <span>Week {{ week.week }}</span>
-        <div class="time">{{ week.avg }}</div>
+    <!-- Main Dashboard Content -->
+    <div class="row g-3 mb-4">
+      <!-- Time Tracking Card -->
+      <div class="col-lg-4">
+        <div class="erp-card h-100">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-stopwatch me-2 text-primary"></i>
+              Today's Timesheet
+            </h5>
+            <div class="card-tools">
+              <span class="badge bg-success">{{ todayDate }}</span>
+            </div>
+          </div>
+          <div class="card-body text-center">
+            <!-- Circular Progress -->
+            <div class="circular-progress-container mb-4">
+              <div class="circular-progress" [attr.data-percentage]="workHoursPercentage">
+                <svg viewBox="0 0 36 36" class="circular-chart">
+                  <path class="circle-bg"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none" stroke="#2d3748" stroke-width="2"/>
+                  <path class="circle"
+                    [attr.stroke-dasharray]="workHoursPercentage + ', 100'"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none" stroke="#0d6efd" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+                <div class="circular-text">
+                  <div class="hours">{{ workHours }}</div>
+                  <div class="label">hours</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Time Details -->
+            <div class="time-details">
+              <div class="row g-2 mb-3">
+                <div class="col-6">
+                  <div class="time-badge bg-success">
+                    <i class="fas fa-sign-in-alt me-1"></i>
+                    <div>Clock In</div>
+                    <div class="fw-bold">{{ clockInTime }}</div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="time-badge bg-danger">
+                    <i class="fas fa-sign-out-alt me-1"></i>
+                    <div>Clock Out</div>
+                    <div class="fw-bold">{{ clockOutTime }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Button -->
+              <div *ngIf="!completed">
+                <button class="btn btn-lg w-100"
+                        [ngClass]="clockedIn ? 'btn-danger' : 'btn-success'"
+                        (click)="toggleClockIn()">
+                  <i class="fas" [ngClass]="clockedIn ? 'fa-sign-out-alt' : 'fa-sign-in-alt'"></i>
+                  {{ clockedIn ? 'Clock Out' : 'Clock In' }}
+                </button>
+              </div>
+              <div *ngIf="completed">
+                <div class="alert alert-success mb-0">
+                  <i class="fas fa-check-circle me-2"></i>
+                  Day Completed Successfully
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance Chart -->
+      <div class="col-lg-8">
+        <div class="erp-card h-100">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-chart-line me-2 text-primary"></i>
+              Weekly Performance Trend
+            </h5>
+            <div class="card-tools">
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-primary">Week</button>
+                <button class="btn btn-outline-primary">Month</button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <apx-chart
+              [series]="apexSeries"
+              [chart]="{type: 'area', height: 300, toolbar: {show: true}, background: 'transparent'}"
+              [xaxis]="apexChartOptions.xaxis"
+              [yaxis]="apexChartOptions.yaxis"
+              [stroke]="{curve: 'smooth', width: 3}"
+              [fill]="{type: 'gradient', gradient: {shadeIntensity: 1, opacityFrom: 0.7, opacityTo: 0.3}}"
+              [dataLabels]="{enabled: false}"
+              [grid]="{borderColor: '#374151', strokeDashArray: 3}"
+              [colors]="['#0d6efd']">
+            </apx-chart>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Daily Details -->
-    <div class="daily-details">
-      <div *ngFor="let record of dailyRecords" class="day-detail">
-        <div class="day-header">
-          <span>{{ record.day }}, {{ record.date }}</span>
-          <span class="time">{{ record.time }}</span>
+    <!-- Statistics Row -->
+    <div class="row g-3 mb-4">
+      <!-- Monthly Overview -->
+      <div class="col-lg-6">
+        <div class="erp-card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-calendar-alt me-2 text-primary"></i>
+              Monthly Overview
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-label">Month Average</div>
+                <div class="stat-value text-primary">{{ monthAvg }}</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">Year Average</div>
+                <div class="stat-value text-success">{{ yearAvg }}</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">1st Fortnight</div>
+                <div class="stat-value text-info">{{ firstFortnightAvg }}</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">2nd Fortnight</div>
+                <div class="stat-value text-warning">{{ secondFortnightAvg }}</div>
+              </div>
+            </div>
+
+            <!-- Progress Bars -->
+            <div class="progress-section mt-4">
+              <div class="progress-item mb-3">
+                <div class="d-flex justify-content-between mb-1">
+                  <span class="text-light">Monthly Target</span>
+                  <span class="text-light">{{ monthlyReport.totalHours || 0 }}/200 hrs</span>
+                </div>
+                <div class="progress progress-dark">
+                  <div class="progress-bar bg-primary" [style.width.%]="(monthlyReport.totalHours / 200) * 100"></div>
+                </div>
+              </div>
+              <div class="progress-item mb-3">
+                <div class="d-flex justify-content-between mb-1">
+                  <span class="text-light">Weekly Target</span>
+                  <span class="text-light">{{ weeklyHours || 0 }}/40 hrs</span>
+                </div>
+                <div class="progress progress-dark">
+                  <div class="progress-bar bg-success" [style.width.%]="(weeklyHours / 40) * 100"></div>
+                </div>
+              </div>
+              <div class="progress-item">
+                <div class="d-flex justify-content-between mb-1">
+                  <span class="text-light">Overtime</span>
+                  <span class="text-light">{{ monthlyReport.overtime || 0 }} hrs</span>
+                </div>
+                <div class="progress progress-dark">
+                  <div class="progress-bar bg-warning" [style.width.%]="monthlyReport.overtime || 0"></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="time-details">
-          <div class="clock-time">
-            <span>{{ record.clockIn }}</span>
-            <span>{{ record.clockOut }}</span>
+      </div>
+
+      <!-- Daily Timeline -->
+      <div class="col-lg-6">
+        <div class="erp-card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-timeline me-2 text-primary"></i>
+              Daily Attendance Timeline
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="timeline-container">
+              <div class="timeline-bars d-flex align-items-end justify-content-between" style="height: 120px;">
+                <div *ngFor="let record of dailyRecords.slice(0, 15)" class="timeline-bar">
+                  <div class="bar"
+                       [ngClass]="{
+                         'bg-success': record.status === 'present',
+                         'bg-danger': record.status === 'absent',
+                         'bg-secondary': record.status === 'holiday'
+                       }"
+                       [style.height]="calculateBarHeight(record.time)"
+                       [title]="record.day + ', ' + record.date + ' - ' + record.time">
+                  </div>
+                  <div class="bar-label">{{ record.date.split(' ')[0] }}</div>
+                </div>
+              </div>
+              <div class="timeline-legend mt-3">
+                <div class="legend-item">
+                  <span class="legend-color bg-success"></span>
+                  <span>Present</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-color bg-danger"></span>
+                  <span>Absent</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-color bg-secondary"></span>
+                  <span>Holiday</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Tables -->
+    <div class="row g-3">
+      <!-- Recent Attendance -->
+      <div class="col-lg-8">
+        <div class="erp-card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-table me-2 text-primary"></i>
+              Recent Attendance Records
+            </h5>
+            <div class="card-tools">
+              <a href="#" class="text-primary">View All</a>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-dark table-hover">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Clock In</th>
+                    <th>Clock Out</th>
+                    <th>Work Hours</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let record of attendanceHistory.slice(0, 8)">
+                    <td>{{ record.date }}</td>
+                    <td>{{ record.clockIn | date: 'shortTime' }}</td>
+                    <td>{{ record.clockOut | date: 'shortTime' }}</td>
+                    <td>{{ record.workHours }}h</td>
+                    <td>
+                      <span class="badge" [ngClass]="{
+                        'bg-success': record.workHours >= 8,
+                        'bg-warning': record.workHours >= 6 && record.workHours < 8,
+                        'bg-danger': record.workHours < 6
+                      }">
+                        {{ record.workHours >= 8 ? 'Full Time' : record.workHours >= 6 ? 'Partial' : 'Insufficient' }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weekly Summary -->
+      <div class="col-lg-4">
+        <div class="erp-card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-chart-bar me-2 text-primary"></i>
+              Weekly Summary
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="weekly-summary">
+              <div *ngFor="let week of weeklyAverages" class="week-item">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <span class="week-label">Week {{ week.week }}</span>
+                    <div class="week-hours">{{ week.avg }}</div>
+                  </div>
+                  <div class="week-progress">
+                    <div class="mini-chart">
+                      <div class="bar bg-primary" style="height: 60%"></div>
+                      <div class="bar bg-success" style="height: 80%"></div>
+                      <div class="bar bg-info" style="height: 90%"></div>
+                      <div class="bar bg-warning" style="height: 70%"></div>
+                      <div class="bar bg-danger" style="height: 85%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
