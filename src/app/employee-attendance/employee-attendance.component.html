@@ -1,6 +1,6 @@
 <div class="erp-dashboard">
   <!-- Top Navigation Bar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark-custom shadow-lg">
+  <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark-custom shadow-lg">
     <div class="container-fluid px-4">
       <a class="navbar-brand fw-bold" href="#">
         <i class="fas fa-building me-2 text-primary"></i>
@@ -21,14 +21,14 @@
         </div>
       </div>
     </div>
-  </nav>
+  </nav> -->
 
   <div class="container-fluid px-4 py-4">
     <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-4">
       <ol class="breadcrumb bg-dark-card p-3 rounded shadow-sm">
         <li class="breadcrumb-item"><a href="#" class="text-primary text-decoration-none">Dashboard</a></li>
-        <li class="breadcrumb-item"><a href="#" class="text-primary text-decoration-none">HR Management</a></li>
+        <!-- <li class="breadcrumb-item"><a href="#" class="text-primary text-decoration-none">HR Management</a></li> -->
         <li class="breadcrumb-item active text-light">Attendance Analytics</li>
       </ol>
     </nav>
@@ -36,14 +36,15 @@
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
-        <h1 class="h3 mb-0 text-light fw-bold">Attendance Management System</h1>
+        <h1 class="h3 mb-0 text-light fw-bold">Attendance Service</h1>
         <p class="text-muted mb-0">Real-time monitoring and analytics dashboard</p>
       </div>
       <div class="d-flex gap-2">
-        <button class="btn btn-outline-info btn-sm">
+        <!-- <button class="btn btn-outline-info btn-sm">
           <i class="fas fa-download me-1"></i>Export Report
-        </button>
-        <button class="btn btn-primary btn-sm">
+        </button> -->
+        <button class="btn btn-primary btn-sm d-flex align-items-center"
+                (click)="refreshData()">
           <i class="fas fa-sync-alt me-1"></i>Refresh
         </button>
       </div>
@@ -77,7 +78,7 @@
             <h6 class="card-title text-white mb-1">Present Days</h6>
             <div class="metric-value text-white">{{ monthlyReport.presentDays || 0 }}</div>
             <div class="metric-change text-white-50">
-              <i class="fas fa-arrow-up"></i> +15% this month
+              <i class="fas fa-arrow-up"></i>
             </div>
           </div>
         </div>
@@ -93,7 +94,7 @@
             <h6 class="card-title text-white mb-1">Absent Days</h6>
             <div class="metric-value text-white">{{ monthlyReport.absentDays || 0 }}</div>
             <div class="metric-change text-white-50">
-              <i class="fas fa-arrow-down"></i> -5% from last month
+              <i class="fas fa-arrow-down"></i> 
             </div>
           </div>
         </div>
@@ -109,8 +110,9 @@
             <h6 class="card-title text-white mb-1">Avg Hours</h6>
             <div class="metric-value text-white">{{ monthlyReport.averageWorkingHours || 0 }}h</div>
             <div class="metric-progress">
-              <div class="progress progress-white">
-                <div class="progress-bar" [style.width.%]="(monthlyReport.averageWorkingHours / 8) * 100"></div>
+              
+              <div class="metric-change text-white-50">
+                <i class="fas fa-user"></i> 
               </div>
             </div>
           </div>
@@ -125,9 +127,9 @@
               <i class="fas fa-hourglass-half"></i>
             </div>
             <h6 class="card-title text-dark mb-1">Total Hours</h6>
-            <div class="metric-value text-dark">{{ monthlyReport.totalHours || 0 }}h</div>
+            <div class="metric-value text-dark">{{ monthlyReport.totalworkinghour || 0 }}h</div>
             <div class="metric-change text-dark">
-              <i class="fas fa-target"></i> {{ ((monthlyReport.totalHours / 200) * 100) || 0 }}% of target
+              <i class="fas fa-target"></i> 
             </div>
           </div>
         </div>
@@ -141,7 +143,7 @@
               <i class="fas fa-clock-rotate-left"></i>
             </div>
             <h6 class="card-title text-white mb-1">Overtime</h6>
-            <div class="metric-value text-white">{{ monthlyReport.overtime || 0 }}h</div>
+            <div class="metric-value text-white">{{ monthlyReport.overtime  }}h</div>
             <div class="metric-change text-white-50">
               <i class="fas fa-exclamation-triangle"></i> Monitor
             </div>
@@ -169,14 +171,17 @@
             <div class="circular-progress-container mb-4">
               <div class="circular-progress" [attr.data-percentage]="workHoursPercentage">
                 <svg viewBox="0 0 36 36" class="circular-chart">
+                  <!-- Background Circle -->
                   <path class="circle-bg"
                     d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none" stroke="#2d3748" stroke-width="2"/>
+                    fill="none" stroke="#2d3748" stroke-width="2" />
+                  <!-- Progress Circle -->
                   <path class="circle"
                     [attr.stroke-dasharray]="workHoursPercentage + ', 100'"
                     d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none" stroke="#0d6efd" stroke-width="2.5" stroke-linecap="round"/>
+                    fill="none" stroke="#0d6efd" stroke-width="2.5" stroke-linecap="round" />
                 </svg>
+                <!-- Text Inside Circle -->
                 <div class="circular-text">
                   <div class="hours">{{ workHours }}</div>
                   <div class="label">hours</div>
@@ -186,7 +191,7 @@
 
             <!-- Time Details -->
             <div class="time-details">
-              <div class="row g-2 mb-3">
+              <div class="row g-3 mb-3">
                 <div class="col-6">
                   <div class="time-badge bg-success">
                     <i class="fas fa-sign-in-alt me-1"></i>
@@ -258,7 +263,7 @@
     <!-- Statistics Row -->
     <div class="row g-3 mb-4">
       <!-- Monthly Overview -->
-      <div class="col-lg-6">
+      <div class="col-lg-12">
         <div class="erp-card">
           <div class="card-header">
             <h5 class="card-title mb-0">
@@ -274,15 +279,15 @@
               </div>
               <div class="stat-item">
                 <div class="stat-label">Year Average</div>
-                <div class="stat-value text-success">{{ yearAvg }}</div>
+                <div class="stat-value text-success">{{ monthlyReport.yearlyaverage }}</div>
               </div>
               <div class="stat-item">
                 <div class="stat-label">1st Fortnight</div>
-                <div class="stat-value text-info">{{ firstFortnightAvg }}</div>
+                <div class="stat-value text-info">{{ monthlyReport.firstFortnightAvg }}</div>
               </div>
               <div class="stat-item">
                 <div class="stat-label">2nd Fortnight</div>
-                <div class="stat-value text-warning">{{ secondFortnightAvg }}</div>
+                <div class="stat-value text-warning">{{ monthlyReport.secondFortnightAvg }}</div>
               </div>
             </div>
 
@@ -300,7 +305,7 @@
               <div class="progress-item mb-3">
                 <div class="d-flex justify-content-between mb-1">
                   <span class="text-light">Weekly Target</span>
-                  <span class="text-light">{{ weeklyHours || 0 }}/40 hrs</span>
+                  <span class="text-light">{{ weeklyHours || 0 }}/50 hrs</span>
                 </div>
                 <div class="progress progress-dark">
                   <div class="progress-bar bg-success" [style.width.%]="(weeklyHours / 40) * 100"></div>
@@ -320,55 +325,12 @@
         </div>
       </div>
 
-      <!-- Daily Timeline -->
-      <div class="col-lg-6">
-        <div class="erp-card">
-          <div class="card-header">
-            <h5 class="card-title mb-0">
-              <i class="fas fa-timeline me-2 text-primary"></i>
-              Daily Attendance Timeline
-            </h5>
-          </div>
-          <div class="card-body">
-            <div class="timeline-container">
-              <div class="timeline-bars d-flex align-items-end justify-content-between" style="height: 120px;">
-                <div *ngFor="let record of dailyRecords.slice(0, 15)" class="timeline-bar">
-                  <div class="bar"
-                       [ngClass]="{
-                         'bg-success': record.status === 'present',
-                         'bg-danger': record.status === 'absent',
-                         'bg-secondary': record.status === 'holiday'
-                       }"
-                       [style.height]="calculateBarHeight(record.time)"
-                       [title]="record.day + ', ' + record.date + ' - ' + record.time">
-                  </div>
-                  <div class="bar-label">{{ record.date.split(' ')[0] }}</div>
-                </div>
-              </div>
-              <div class="timeline-legend mt-3">
-                <div class="legend-item">
-                  <span class="legend-color bg-success"></span>
-                  <span>Present</span>
-                </div>
-                <div class="legend-item">
-                  <span class="legend-color bg-danger"></span>
-                  <span>Absent</span>
-                </div>
-                <div class="legend-item">
-                  <span class="legend-color bg-secondary"></span>
-                  <span>Holiday</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    
 
     <!-- Data Tables -->
     <div class="row g-3">
       <!-- Recent Attendance -->
-      <div class="col-lg-8">
+      <div class="col-lg-12">
         <div class="erp-card">
           <div class="card-header">
             <h5 class="card-title mb-0">
@@ -414,38 +376,8 @@
         </div>
       </div>
 
-      <!-- Weekly Summary -->
-      <div class="col-lg-4">
-        <div class="erp-card">
-          <div class="card-header">
-            <h5 class="card-title mb-0">
-              <i class="fas fa-chart-bar me-2 text-primary"></i>
-              Weekly Summary
-            </h5>
-          </div>
-          <div class="card-body">
-            <div class="weekly-summary">
-              <div *ngFor="let week of weeklyAverages" class="week-item">
-                <div class="d-flex justify-content-between align-items-center">
-                  <div>
-                    <span class="week-label">Week {{ week.week }}</span>
-                    <div class="week-hours">{{ week.avg }}</div>
-                  </div>
-                  <div class="week-progress">
-                    <div class="mini-chart">
-                      <div class="bar bg-primary" style="height: 60%"></div>
-                      <div class="bar bg-success" style="height: 80%"></div>
-                      <div class="bar bg-info" style="height: 90%"></div>
-                      <div class="bar bg-warning" style="height: 70%"></div>
-                      <div class="bar bg-danger" style="height: 85%"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    
+      
     </div>
   </div>
 </div>

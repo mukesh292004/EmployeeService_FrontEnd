@@ -1,1 +1,273 @@
-<p>employee-leave works!</p>
+<div class="erp-dashboard">
+    <div class="container-fluid px-4 py-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb bg-dark-card p-3 rounded shadow-sm">
+                <li class="breadcrumb-item"><a href="#" class="text-primary text-decoration-none">Dashboard</a></li>
+                <li class="breadcrumb-item active text-light">Leave Management</li>
+            </ol>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 mb-0 text-light fw-bold text-center">Leave Service</h1>
+                <p class="text-muted mb-0 text-center">Manage leave requests and balances</p>
+            </div>
+        </div>
+
+        <!-- KPI Summary Cards -->
+        <div class="row g-3 mb-4">
+            <!-- Employee ID Card -->
+            <div class="col-xl-2 col-lg-4 col-md-6">
+                <div class="kpi-card bg-gradient-primary">
+                    <div class="card-body text-center">
+                        <div class="icon-wrapper mb-3">
+                            <i class="fas fa-id-badge"></i>
+                        </div>
+                        <h6 class="card-title text-white mb-1">Employee ID</h6>
+                        <div class="metric-value text-white">{{ userId }}</div>
+                        <div class="metric-change text-white-50">
+                            <i class="fas fa-user"></i> Active
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Leave Balance -->
+            <div class="col-xl-2 col-lg-4 col-md-6">
+                <div class="kpi-card bg-gradient-success">
+                    <div class="card-body text-center">
+                        <div class="icon-wrapper mb-3">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h6 class="card-title text-white mb-1">Total Leave Balance</h6>
+                        <div class="metric-value text-white">{{ totalLeaveBalance }}</div>
+                        <div class="metric-change text-white-50">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Leave Requests -->
+            <div class="col-xl-2 col-lg-4 col-md-6">
+                <div class="kpi-card bg-gradient-warning">
+                    <div class="card-body text-center">
+                        <div class="icon-wrapper mb-3">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h6 class="card-title text-dark mb-1">Pending Requests</h6>
+                        <div class="metric-value text-dark">{{ pendingRequestsCount }}</div>
+                        <div class="metric-change text-dark">
+                            <i class="fas fa-hourglass-half"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Approved Leave Requests -->
+            <div class="col-xl-2 col-lg-4 col-md-6">
+                <div class="kpi-card bg-gradient-info">
+                    <div class="card-body text-center">
+                        <div class="icon-wrapper mb-3">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h6 class="card-title text-white mb-1">Approved Requests</h6>
+                        <div class="metric-value text-white">{{ approvedRequestsCount }}</div>
+                        <div class="metric-change text-white-50">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rejected Leave Requests -->
+            <div class="col-xl-2 col-lg-4 col-md-6">
+                <div class="kpi-card bg-gradient-danger">
+                    <div class="card-body text-center">
+                        <div class="icon-wrapper mb-3">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <h6 class="card-title text-white mb-1">Rejected Requests</h6>
+                        <div class="metric-value text-white">{{ rejectedRequestsCount }}</div>
+                        <div class="metric-change text-white-50">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leave Types Cards -->
+            <div class="col-xl-2 col-lg-4 col-md-6" *ngFor="let type of leaveBalances">
+                <div class="kpi-card" [ngClass]="{
+            'bg-gradient-success': type.type === 'casual',
+            'bg-gradient-primary': type.type === 'vacation',
+            'bg-gradient-warning': type.type === 'personal',
+            'bg-gradient-danger': type.type === 'sick'
+          }">
+                    <div class="card-body text-center">
+                        <div class="icon-wrapper mb-3">
+                            <i class="fas" [ngClass]="{
+                  'fa-calendar-check': type.type === 'casual',
+                  'fa-plane': type.type === 'vacation',
+                  'fa-user': type.type === 'personal',
+                  'fa-briefcase-medical': type.type === 'sick'
+                }" style="font-size: 2rem;"></i>
+                        </div>
+                        <h6 class="card-title text-white mb-1">{{ type.type | titlecase }}</h6>
+                        <div class="metric-value text-white">{{ type.remaining }} days</div>
+                        <div class="metric-change text-white-50">
+                            <i class="fas fa-info-circle"></i> Available
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Apply Leave Form -->
+        <div class="row g-3 mb-4">
+            <div class="col-12">
+                <div class="erp-card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Apply for Leave</h5>
+                        <form (ngSubmit)="applyForLeave()">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="leaveType" class="form-label">Leave Type</label>
+                                    <select id="leaveType" class="form-select" [(ngModel)]="leaveRequest.leaveType"
+                                        name="leaveType" required>
+                                        <option value="" selected>Select Leave Type</option>
+                                        <option value="casual">Casual Leave</option>
+                                        <option value="vacation">Vacation Leave</option>
+                                        <option value="personal">Personal Leave</option>
+                                        <option value="sick">Sick Leave</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="startDate" class="form-label">Start Date</label>
+                                    <input type="date" id="startDate" class="form-control" [(ngModel)]="leaveRequest.startDate"
+                                        name="startDate" required />
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="endDate" class="form-label">End Date</label>
+                                    <input type="date" id="endDate" class="form-control" [(ngModel)]="leaveRequest.endDate"
+                                        name="endDate" required />
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <button type="submit" class="btn btn-primary">Apply</button>
+                            </div>
+                        </form>
+                        <p *ngIf="errorMessage" class="text-danger mt-2">{{ errorMessage }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Leave History -->
+        <div class="row g-3 mb-4">
+            <div class="col-12">
+                <div class="erp-card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Search Leave History</h5>
+                        <form class="row g-3">
+                            <div class="col-md-3">
+                                <label for="searchLeaveType" class="form-label">Leave Type</label>
+                                <select id="searchLeaveType" class="form-select" [(ngModel)]="searchFilters.leaveType"
+                                    name="searchLeaveType" (ngModelChange)="applyFilters()">
+                                    <option value="" selected>All</option>
+                                    <option value="casual">Casual Leave</option>
+                                    <option value="vacation">Vacation Leave</option>
+                                    <option value="personal">Personal Leave</option>
+                                    <option value="sick">Sick Leave</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="searchStatus" class="form-label">Status</label>
+                                <select id="searchStatus" class="form-select" [(ngModel)]="searchFilters.status"
+                                    name="searchStatus" (ngModelChange)="applyFilters()">
+                                    <option value="">All</option>
+                                    <option value="Approved">Approved</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Rejected">Rejected</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="searchStartDate" class="form-label">Start Date</label>
+                                <input type="date" id="searchStartDate" class="form-control" [(ngModel)]="searchFilters.startDate"
+                                    name="searchStartDate" (ngModelChange)="applyFilters()" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leave History Table -->
+        <div class="row g-3 mt-4">
+            <div class="col-12">
+                <div class="erp-card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-light mb-3 text-center">Leave History</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover align-middle table-dark table-striped text-center">
+                                <thead class="bg-secondary text-light">
+                                    <tr>
+                                        <th>Leave Type</th>
+                                        <th>From</th>
+                                        <th>To</th>
+                                        <th>Days</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let leave of paginatedLeaveHistory">
+                                        <td>{{ leave.leaveType }}</td>
+                                        <td>{{ leave.startDate | date: 'dd/MM/yyyy' }}</td>
+                                        <td>{{ leave.endDate | date: 'dd/MM/yyyy' }}</td>
+                                        <td>{{ calculateDays(leave.startDate, leave.endDate) }}</td>
+                                        <td>
+                                            <span class="badge" [ngClass]="{
+                    'bg-success': leave.status === 'Approved',
+                    'bg-warning': leave.status === 'Pending',
+                    'bg-danger': leave.status === 'Rejected'
+                  }">
+                                                {{ leave.status }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button *ngIf="leave.status === 'Pending'" class="btn btn-sm btn-danger"
+                                                (click)="deleteLeave(leave.leaveId)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination Controls -->
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item" [class.disabled]="currentPage === 1">
+                                    <button class="page-link bg-dark text-light" (click)="changePage(currentPage - 1)">Previous</button>
+                                </li>
+                                <li class="page-item" *ngFor="let page of totalPagesArray" [class.active]="page === currentPage">
+                                    <button class="page-link bg-dark text-light" (click)="changePage(page)">{{ page }}</button>
+                                </li>
+                                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                                    <button class="page-link bg-dark text-light" (click)="changePage(currentPage + 1)">Next</button>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+    <div class="toast-container p-3" id="toastPlacement"></div>
+</div>

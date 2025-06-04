@@ -19,10 +19,11 @@ export class EmployeeAttendanceComponent implements OnInit {
   clockInTime: string = '00:00:00';
   clockOutTime: string = '00:00:00';
   clockedIn: boolean = false;
-  workHours: number = 0;
+  workHours: number = 0; // Current working hours
+  totalWorkingHours: number = 10; // Total working hours (e.g., 10 hours)
+  workHoursPercentage: number = 50; // Percentage for circular progress
   breakHours: number = 0;
   overtimeHours: number = 0;
-  workHoursPercentage: number = 0;
   attendanceHistory: any[] = [];
   monthlyReport: any = {};
   weeklyHours: number = 0;
@@ -78,19 +79,30 @@ export class EmployeeAttendanceComponent implements OnInit {
   public apexSeries: ApexAxisChartSeries = [];
   public apexChartOptions: any = {};
 
-  currentMonth: string = 'May 2025';
-  monthAvg: string = '09h 42m';
+  // currentMonth: string = 'May 2025';
+  currentMonth: string = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
+  currentYear: number = new Date().getFullYear();
+  monthAvg: number = this.monthlyReport.averageWorkingHours || 0;
   yearAvg: string = '09h 42m';
-  firstFortnightAvg: string = '10h 15m';
-  secondFortnightAvg: string = '09h 11m';
-
-  weeklyAverages = [
-    { week: 1, avg: '07h 32m' },
-    { week: 2, avg: '10h 16m' },
-    { week: 3, avg: '10h 12m' },
-    { week: 4, avg: '08h 12m' },
-    { week: 5, avg: '10h 02m' }
-  ];
+  weeklyAverages: { week: number; averageHours: number; barHeight: string }[] = [];
+  ngOnInit(): void {
+    const maxWeeklyHours = 50;
+    this.weeklyAverages = (this.monthlyReport.weeklyReports || []).map(report => {
+      const percentage = (report.averageHours / maxWeeklyHours) * 100;
+      return {
+        week: report.weekNumber,
+        averageHours: report.averageHours,
+        barHeight: `${Math.min(percentage, 100)}%`
+      };
+    });
+  
+    this.userId = Number(sessionStorage.getItem('userId'));
+    this.fetchAttendanceHistory();
+    this.fetchMonthlyReport();
+    this.calculateWeeklyHours();
+    this.updateMonthlyView();
+    this.calculateWorkHoursPercentage();
+  }
 
   dailyRecords = [
     { date: '25 May', day: 'Sun', time: '--h --m', clockIn: '--:--', clockOut: '--:--', status: 'holiday' },
@@ -103,14 +115,6 @@ export class EmployeeAttendanceComponent implements OnInit {
   ];
 
   constructor(private userService: UserService) {}
-
-  ngOnInit(): void {
-    this.userId = Number(sessionStorage.getItem('userId'));
-    this.fetchAttendanceHistory();
-    this.fetchMonthlyReport();
-    this.calculateWeeklyHours();
-    this.updateMonthlyView();
-  }
 
   fetchAttendanceHistory(): void {
     this.userService.getAttendanceHistory(this.userId).subscribe({
@@ -174,7 +178,11 @@ export class EmployeeAttendanceComponent implements OnInit {
   }
 
   calculateWorkHoursPercentage(): void {
-    this.workHoursPercentage = (this.workHours / 8) * 100;
+    if (this.totalWorkingHours > 0) {
+      this.workHoursPercentage = (this.workHours / this.totalWorkingHours) * 100;
+    } else {
+      this.workHoursPercentage = 0; // Default to 0 if total working hours is invalid
+    }
   }
 
   calculateWeeklyHours(): void {
@@ -375,11 +383,8 @@ export class EmployeeAttendanceComponent implements OnInit {
     this.userService.getMonthlyReport(this.userId, new Date().getMonth() + 1).subscribe({
       next: (data) => {
         if (data) {
-          this.monthAvg = data.monthlyAverage || this.monthAvg;
           this.yearAvg = data.yearlyAverage || this.yearAvg;
-          this.firstFortnightAvg = data.firstFortnightAverage || this.firstFortnightAvg;
-          this.secondFortnightAvg = data.secondFortnightAverage || this.secondFortnightAvg;
-
+         
           if (data.dailyRecords) {
             this.dailyRecords = data.dailyRecords.map(record => ({
               date: new Date(record.date).toLocaleString('en-US', { day: '2-digit', month: 'short' }),
@@ -409,5 +414,21 @@ export class EmployeeAttendanceComponent implements OnInit {
     const percentage = (totalHours / 10) * 100;
 
     return `${Math.min(percentage, 100)}%`;
+  }
+
+  refreshData(): void {
+    this.fetchAttendanceHistory();
+    this.fetchMonthlyReport();
+    this.calculateWeeklyHours();
+    this.updateWeekChartData();
+    this.updateWeekLineChartData();
+    this.updateApexChartData();
+    this.updateMonthlyView();
+  }
+
+  // Example method to update work hours dynamically
+  updateWorkHours(hours: number): void {
+    this.workHours = hours;
+    this.calculateWorkHoursPercentage();
   }
 }

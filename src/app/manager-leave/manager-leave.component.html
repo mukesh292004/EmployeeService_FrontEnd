@@ -1,0 +1,188 @@
+<div class="erp-dashboard">
+  <div class="container-fluid px-4 py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb bg-dark-card p-3 rounded shadow-sm">
+        <li class="breadcrumb-item"><a href="#" class="text-primary text-decoration-none">Dashboard</a></li>
+        <li class="breadcrumb-item active text-light">Leave Management</li>
+      </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 mb-0 text-light fw-bold text-center">Manager Service</h1>
+        <p class="text-muted mb-0 text-center">Manage leave requests and approvals</p>
+      </div>
+    </div>
+
+    <!-- Leave Status Cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <div class="kpi-card bg-gradient-success">
+          <div class="card-body text-center">
+            <div class="icon-wrapper mb-3">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <h6 class="card-title text-white mb-1">Approved</h6>
+            <div class="metric-value text-white">{{ approvedCount }}</div>
+            <p class="metric-change text-white-50">Approved Leaves</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="kpi-card bg-gradient-warning">
+          <div class="card-body text-center">
+            <div class="icon-wrapper mb-3">
+              <i class="fas fa-hourglass-half"></i>
+            </div>
+            <h6 class="card-title text-dark mb-1">Pending</h6>
+            <div class="metric-value text-dark">{{ pendingCount }}</div>
+            <p class="metric-change text-dark">Pending Leaves</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="kpi-card bg-gradient-danger">
+          <div class="card-body text-center">
+            <div class="icon-wrapper mb-3">
+              <i class="fas fa-times-circle"></i>
+            </div>
+            <h6 class="card-title text-white mb-1">Rejected</h6>
+            <div class="metric-value text-white">{{ rejectedCount }}</div>
+            <p class="metric-change text-white-50">Rejected Leaves</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Form -->
+    <div class="row g-3 mb-4">
+      <div class="col-12">
+        <div class="erp-card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-center">Search Leave Requests</h5>
+            <form class="row g-3">
+              <div class="col-md-3">
+                <label for="startDate" class="form-label">Start Date</label>
+                <input
+                  type="date"
+                  id="startDate"
+                  class="form-control"
+                  [(ngModel)]="filters.startDate"
+                  name="startDate"
+                  (ngModelChange)="applyFilters()"
+                />
+              </div>
+              <div class="col-md-3">
+                <label for="employeeId" class="form-label">Employee ID</label>
+                <input
+                  type="number"
+                  id="employeeId"
+                  class="form-control"
+                  [(ngModel)]="filters.employeeId"
+                  name="employeeId"
+                  (ngModelChange)="applyFilters()"
+                />
+              </div>
+              <div class="col-md-3">
+                <label for="leaveType" class="form-label">Leave Type</label>
+                <select
+                  id="leaveType"
+                  class="form-select"
+                  [(ngModel)]="filters.leaveType"
+                  name="leaveType"
+                  (ngModelChange)="applyFilters()"
+                >
+                  <option value="">All</option>
+                  <option value="casual">Casual Leave</option>
+                  <option value="vacation">Vacation Leave</option>
+                  <option value="personal">Personal Leave</option>
+                  <option value="sick">Sick Leave</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="status" class="form-label">Status</label>
+                <select
+                  id="status"
+                  class="form-select"
+                  [(ngModel)]="filters.status"
+                  name="status"
+                  (ngModelChange)="applyFilters()"
+                >
+                  <option value="">All</option>
+                  <option value="Approved">Approved</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Leave Requests Table -->
+    <div class="row g-3 mt-4">
+      <div class="col-12">
+        <div class="erp-card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title text-light mb-3 text-center">All Leave Requests</h5>
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover align-middle table-dark table-striped text-center">
+                <thead class="bg-secondary text-light">
+                  <tr>
+                    <th>Employee Id</th>
+                    <th>Leave Type</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Days</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let leave of filteredLeaves">
+                    <td>{{ leave.employeeId }}</td>
+                    <td>{{ leave.leaveType }}</td>
+                    <td>{{ leave.startDate | date: 'dd/MM/yyyy' }}</td>
+                    <td>{{ leave.endDate | date: 'dd/MM/yyyy' }}</td>
+                    <td>{{ calculateDays(leave.startDate, leave.endDate) }}</td>
+                    <td>
+                      <span
+                        class="badge"
+                        [ngClass]="{
+                          'bg-success': leave.status === 'Approved',
+                          'bg-warning': leave.status === 'Pending',
+                          'bg-danger': leave.status === 'Rejected'
+                        }"
+                      >
+                        {{ leave.status }}
+                      </span>
+                    </td>
+                    <td>
+                      <button
+                        *ngIf="leave.status === 'Pending'"
+                        class="btn btn-sm btn-success me-2"
+                        (click)="approveLeave(leave.leaveId)"
+                      >
+                        <i class="fas fa-check"></i>
+                      </button>
+                      <button
+                        *ngIf="leave.status === 'Pending'"
+                        class="btn btn-sm btn-danger"
+                        (click)="rejectLeave(leave.leaveId)"
+                      >
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

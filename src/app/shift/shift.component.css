@@ -1,0 +1,42 @@
+/* Redesigned Search Card */
+.search-card {
+    background-color: #f8f9fa;
+    border-left: 5px solid #007bff;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .search-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Hover effect for table rows */
+  .table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+  }
+  
+  /* Card hover effect */
+  .card {
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Button styling */
+  .btn-primary {
+    transition: background-color 0.3s, transform 0.3s;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+  }
+  
+  .btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    cursor: not-allowed;
+  }

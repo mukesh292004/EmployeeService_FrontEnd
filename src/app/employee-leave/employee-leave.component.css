@@ -1,0 +1,610 @@
+/* Hover effect for cards */
+.leave-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .leave-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Badge styling */
+  .badge {
+    font-weight: 500;
+    padding: 0.5em 0.75em;
+  }
+  
+  /* Responsive table */
+  .table {
+    font-size: 0.9rem;
+  }
+  
+  @media (max-width: 768px) {
+    .leave-card {
+      margin-bottom: 1rem;
+    }
+  
+    .table {
+      font-size: 0.8rem;
+    }
+  }
+
+/* ERP Dashboard Global Styles */
+.erp-dashboard {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 20%, #0f3460 100%);
+  min-height: 100vh;
+  color: #e2e8f0;
+}
+
+/* Cards */
+.erp-card {
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid #475569;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  animation: slideInUp 0.5s ease-out;
+}
+/* Style input and select elements inside .erp-card */
+.erp-card input,
+.erp-card select {
+  background: rgba(30, 41, 59, 0.9); /* Match .erp-card background */
+  color: #e2e8f0; /* Light text color */
+  border: 1px solid #475569; /* Border matching .erp-card */
+  border-radius: 8px; /* Rounded corners */
+  padding: 0.5rem; /* Padding for better spacing */
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+}
+
+.erp-card input:focus,
+.erp-card select:focus {
+  border-color: #3b82f6; 
+  outline: none; /* Remove default outline */
+  box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); /* Add subtle glow */
+}
+
+.erp-card label {
+  color: #e2e8f0; /* Light text color for labels */
+}
+
+.erp-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.erp-card .card-header {
+  background: rgba(51, 65, 85, 0.8);
+  border-bottom: 1px solid #475569;
+  display: flex;
+  justify-content: between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+}
+
+.erp-card .card-title {
+  color: #e2e8f0;
+  font-weight: 600;
+  margin: 0;
+}
+
+.card-tools {
+  margin-left: auto;
+}
+
+.erp-card .card-body {
+  padding: 1.5rem;
+}
+
+/* Table Styles */
+.table-dark {
+  --bs-table-bg: rgba(30, 41, 59, 0.8);
+  --bs-table-striped-bg: rgba(51, 65, 85, 0.5);
+  --bs-table-hover-bg: rgba(71, 85, 105, 0.5);
+  border-color: #475569;
+}
+
+.table-dark th {
+  background: rgba(51, 65, 85, 0.8);
+  border-color: #475569;
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.table-dark td {
+  border-color: #475569;
+  color: #cbd5e1;
+}
+
+/* Utility Classes */
+.text-light {
+  color: #e2e8f0 !important;
+}
+
+.text-muted {
+  color: #94a3b8 !important;
+}
+
+.border-primary {
+  border-color: #3b82f6 !important;
+}
+
+/* Button Enhancements */
+.btn {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ERP Dashboard Global Styles */
+.erp-dashboard {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 20%, #0f3460 100%);
+    min-height: 100vh;
+    color: #e2e8f0;
+  }
+  
+  /* Custom Dark Theme */
+  .bg-dark-custom {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
+    border-bottom: 1px solid #475569;
+  }
+  
+  .bg-dark-card {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border: 1px solid #475569;
+  }
+  
+  /* Navigation */
+  .navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  
+  /* Breadcrumb */
+  .breadcrumb {
+    background: rgba(30, 41, 59, 0.9) !important;
+    border: 1px solid #475569;
+  }
+  
+  .breadcrumb-item a {
+    transition: color 0.3s ease;
+  }
+  
+  .breadcrumb-item a:hover {
+    color: #60a5fa !important;
+  }
+  
+  /* KPI Cards */
+  .kpi-card {
+    background: rgba(30, 41, 59, 0.9);
+    border: 1px solid #475569;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .kpi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+  
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient);
+  }
+  
+  .bg-gradient-primary {
+    --gradient: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  }
+  
+  .bg-gradient-success {
+    --gradient: linear-gradient(135deg, #10b981, #059669);
+    background: linear-gradient(135deg, #10b981, #059669);
+  }
+  
+  .bg-gradient-danger {
+    --gradient: linear-gradient(135deg, #ef4444, #dc2626);
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+  }
+  
+  .bg-gradient-info {
+    --gradient: linear-gradient(135deg, #06b6d4, #0891b2);
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+  }
+  
+  .bg-gradient-warning {
+    --gradient: linear-gradient(135deg, #f59e0b, #d97706);
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+  }
+  
+  .bg-gradient-purple {
+    --gradient: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  }
+  
+  /* KPI Card Elements */
+  .icon-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    backdrop-filter: blur(10px);
+  }
+  
+  .icon-wrapper i {
+    font-size: 24px;
+    color: white;
+  }
+  
+  .metric-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+    margin: 0.5rem 0;
+  }
+  
+  .metric-change {
+    font-size: 0.875rem;
+    opacity: 0.9;
+  }
+  
+  .metric-progress {
+    margin-top: 0.5rem;
+  }
+  
+  .progress-white {
+    background: rgba(255, 255, 255, 0.2);
+    height: 4px;
+  }
+  
+  .progress-white .progress-bar {
+    background: rgba(255, 255, 255, 0.8);
+  }
+  
+  /* Main ERP Cards */
+  .erp-card {
+    background: rgba(30, 41, 59, 0.9);
+    border: 1px solid #475569;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+  
+  .erp-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+  }
+  
+  .erp-card .card-header {
+    background: rgba(51, 65, 85, 0.8);
+    border-bottom: 1px solid #475569;
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+  }
+  
+  .erp-card .card-title {
+    color: #e2e8f0;
+    font-weight: 600;
+    margin: 0;
+  }
+  
+  .card-tools {
+    margin-left: auto;
+  }
+  
+  .erp-card .card-body {
+    padding: 1.5rem;
+  }
+  
+  /* Circular Progress */
+  .circular-progress-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+  }
+  
+  .circular-chart {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+  
+  .circle {
+    stroke-dasharray: 0, 100;
+    animation: progress 2s ease-out forwards;
+  }
+  
+  .circular-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  
+  .circular-text .hours {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0d6efd;
+  }
+  
+  .circular-text .label {
+    font-size: 0.875rem;
+    color: #94a3b8;
+  }
+  
+  @keyframes progress {
+    to {
+      stroke-dasharray: var(--percentage, 0), 100;
+    }
+  }
+  
+  /* Time Badges */
+  .time-badge {
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    color: white;
+    font-size: 0.875rem;
+  }
+  
+  .time-badge .fw-bold {
+    font-size: 1.1rem;
+    margin-top: 0.25rem;
+  }
+  
+  /* Statistics Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .stat-item {
+    text-align: center;
+    padding: 1rem;
+    background: rgba(51, 65, 85, 0.5);
+    border-radius: 8px;
+    border: 1px solid #475569;
+  }
+  
+  .stat-label {
+    font-size: 0.875rem;
+    color: #94a3b8;
+    margin-bottom: 0.5rem;
+  }
+  
+  .stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  
+  /* Progress Bars */
+  .progress-dark {
+    background: rgba(71, 85, 105, 0.5);
+    height: 8px;
+    border-radius: 4px;
+  }
+  
+  .progress-item {
+    margin-bottom: 1rem;
+  }
+  
+  /* Timeline */
+  .timeline-container {
+    padding: 1rem 0;
+  }
+  
+  .timeline-bars {
+    padding: 0 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .timeline-bar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 2px;
+  }
+  
+  .timeline-bar .bar {
+    width: 12px;
+    min-height: 8px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .timeline-bar .bar:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .bar-label {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-top: 0.5rem;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+  
+  .timeline-legend {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #94a3b8;
+  }
+  
+  .legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+  
+  /* Table Styles */
+  .table-dark {
+    --bs-table-bg: rgba(30, 41, 59, 0.8);
+    --bs-table-striped-bg: rgba(51, 65, 85, 0.5);
+    --bs-table-hover-bg: rgba(71, 85, 105, 0.5);
+    border-color: #475569;
+  }
+  
+  .table-dark th {
+    background: rgba(51, 65, 85, 0.8);
+    border-color: #475569;
+    color: #e2e8f0;
+    font-weight: 600;
+  }
+  
+  .table-dark td {
+    border-color: #475569;
+    color: #cbd5e1;
+  }
+  
+  /* Weekly Summary */
+  .weekly-summary {
+    space-y: 1rem;
+  }
+  
+  .week-item {
+    padding: 1rem;
+    background: rgba(51, 65, 85, 0.5);
+    border-radius: 8px;
+    border: 1px solid #475569;
+    margin-bottom: 1rem;
+  }
+  
+  .week-label {
+    font-size: 0.875rem;
+    color: #94a3b8;
+  }
+  
+  .week-hours {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #e2e8f0;
+  }
+  
+  .mini-chart {
+    display: flex;
+    align-items: end;
+    gap: 2px;
+    height: 30px;
+  }
+  
+  .mini-chart .bar {
+    width: 4px;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+  }
+  
+  .mini-chart .bar:hover {
+    transform: scaleY(1.1);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .metric-value {
+      font-size: 2rem;
+    }
+    
+    .timeline-bars {
+      overflow-x: auto;
+    }
+    
+    .bar-label {
+      writing-mode: horizontal-tb;
+      text-orientation: initial;
+    }
+  }
+  
+  /* Button Enhancements */
+  .btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Badges */
+  .badge {
+    font-weight: 500;
+    padding: 0.5em 0.75em;
+  }
+  
+  /* Animation for cards */
+  .erp-card {
+    animation: slideInUp 0.5s ease-out;
+  }
+  
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Utility Classes */
+  .text-light {
+    color: #e2e8f0 !important;
+  }
+  
+  .text-muted {
+    color: #94a3b8 !important;
+  }
+  
+  .border-primary {
+    border-color: #3b82f6 !important;
+  }
