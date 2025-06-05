@@ -1,36 +1,80 @@
 <div class="d-flex flex-column min-vh-100">
-  <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-    <div class="container-fluid mx-2">
-      <a class="navbar-brand " routerLink="/">EM_Power</a>
-      <ul class="navbar-nav ms-auto">
-        @if(loginstatus) {
-        <li class="nav-item">
-          <a class="nav-link active" routerLink="/login">LOGIN</a>
-        </li>
-        }
-        <li class="nav-item">
-          <a class="nav-link active" routerLink="/register">REGISTRATION</a>
-        </li>
-        @if(!loginstatus) {
-        <li class="nav-item">
-          <a class="nav-link active">EMPLOYEES</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active mx-2" (click)="logout()">
-            <i class="fa-solid fa-right-to-bracket"></i>LOGOUT
-          </a>
-        </li>
-        }
-      </ul>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+      <!-- Brand -->
+      <a class="navbar-brand" routerLink="/">EM_Power</a>
+
+      <!-- Toggle Button -->
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarContent"
+        aria-controls="navbarContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <!-- Collapsible Content -->
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <!-- Login Link -->
+          <li class="nav-item" *ngIf="!isLoggedIn">
+            <a class="nav-link d-flex flex-column text-center" routerLink="/login">
+              <i class="fas fa-sign-in-alt fa-lg my-2"></i>
+              <span class="small">Login</span>
+            </a>
+          </li>
+
+          <!-- Register Link -->
+          <li class="nav-item">
+            <a class="nav-link d-flex flex-column text-center" routerLink="/register">
+              <i class="fas fa-user-plus fa-lg my-2"></i>
+              <span class="small">Register</span>
+            </a>
+          </li>
+
+          <!-- Profile Dropdown -->
+          <li class="nav-item dropdown" *ngIf="isLoggedIn">
+            <a
+              class="nav-link dropdown-toggle d-flex align-items-center"
+              href="#"
+              id="navbarDropdownMenuLink"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <img
+                src="https://mdbootstrap.com/img/Photos/Avatars/img%20(9).jpg"
+                class="rounded-circle"
+                height="30"
+                alt="User Avatar"
+                loading="lazy"
+              />
+              <span class="ms-2">{{ userName }}</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" routerLink="/profile">My Profile</a></li>
+              <li><a class="dropdown-item" (click)="logout()">Logout</a></li>
+            
+            </ul>
+          </li>
+        </ul>
+      </div>
     </div>
   </nav>
 
-  
-  <div class="flex-grow-1">
+  <!-- Main Content -->
+  <div class="flex-grow-1 mt-5 pt-3">
     <router-outlet></router-outlet>
   </div>
 
+  <!-- Footer -->
   <footer class="bg-dark text-white text-center py-3">
     &copy; 2025 EM_Power. All rights reserved.
   </footer>
+  
 </div>

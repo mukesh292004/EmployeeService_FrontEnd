@@ -1,23 +1,30 @@
 import { CommonModule } from '@angular/common'; // Import CommonModule
 import { FormsModule } from '@angular/forms';
-import { DatePipe, UpperCasePipe } from '@angular/common';
+import { UpperCasePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { UserService, Employee, UpdateEmployeePayload } from '../userservice.service';
 
 @Component({
   selector: 'app-employees',
   standalone: true,
-  imports: [CommonModule, FormsModule, UpperCasePipe, DatePipe], // Add CommonModule here
+  imports: [CommonModule, FormsModule, UpperCasePipe], // Removed DatePipe
   templateUrl: './employees.component.html',
   styleUrls: ['./employees.component.css']
 })
 export class EmployeesComponent implements OnInit {
   orgName = "Cognizant";
-  employees: Employee[] = [];
+  employees: Employee[] = []; // Full list of employees
+  visibleEmployees: Employee[] = []; // Subset of employees for the slider
+  sliderStartIndex = 0; // Start index for the slider
+  sliderItemsCount = 4; // Number of items visible at a time
   isModalOpen = false;
   selectedEmployee: Employee | null = null;
-  isAddModalOpen = false; // Track the state of the Add Employee modal
-  newEmployee: Partial<Employee> = {}; // Temporary object for new employee data
+  isAddModalOpen = false; 
+  newEmployee: Partial<Employee> = {}; 
+  currentPage = 1;
+  itemsPerPage = 5;
+  paginatedEmployees: Employee[] = [];
+  totalPages = 0; // Add this property
 
   constructor(private userService: UserService) {}
 
@@ -29,6 +36,8 @@ export class EmployeesComponent implements OnInit {
     this.userService.getEmployees().subscribe({
       next: (data) => {
         this.employees = data;
+        this.updateVisibleEmployees();
+        this.updatePagination();
         console.log("Employees loaded", this.employees);
       },
       error: (err) => {
@@ -38,6 +47,45 @@ export class EmployeesComponent implements OnInit {
     });
   }
 
+  updatePagination(): void {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedEmployees = this.employees.slice(startIndex, endIndex);
+    this.totalPages = Math.ceil(this.employees.length / this.itemsPerPage); // Calculate total pages
+  }
+
+  updateVisibleEmployees(): void {
+    this.visibleEmployees = this.employees.slice(this.sliderStartIndex, this.sliderStartIndex + this.sliderItemsCount);
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.updatePagination();
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePagination();
+    }
+  }
+
+  nextEmployee(): void {
+    if (this.sliderStartIndex + this.sliderItemsCount < this.employees.length) {
+      this.sliderStartIndex++;
+      this.updateVisibleEmployees();
+    }
+  }
+
+  previousEmployee(): void {
+    if (this.sliderStartIndex > 0) {
+      this.sliderStartIndex--;
+      this.updateVisibleEmployees();
+    }
+  }
+
   deleteEmployee(emp: Employee): void {
     const confirmDelete = confirm(`Are you sure you want to delete employee ${emp.name}?`);
     if (confirmDelete) {
@@ -45,12 +93,10 @@ export class EmployeesComponent implements OnInit {
         next: () => {
           const index = this.employees.indexOf(emp);
           if (index !== -1) {
-            this.employees.splice(index, 1); // Remove the employee from the local list
+            this.employees.splice(index, 1); 
           }
-          // Optionally, you can reload the employees list
-          this.loadEmployees(); // Uncomment if you want to reload the list from the server
+          this.loadEmployees(); 
           alert("Employee deleted successfully!");
-
         },
         error: (err) => {
           console.error("Failed to delete employee", err);
@@ -61,7 +107,7 @@ export class EmployeesComponent implements OnInit {
   }
 
   openEditModal(emp: Employee): void {
-    this.selectedEmployee = { ...emp }; // Clone the employee object
+    this.selectedEmployee = { ...emp }; 
     this.isModalOpen = true;
   }
 
@@ -143,5 +189,11 @@ export class EmployeesComponent implements OnInit {
 
   trackById(index: number, employee: Employee): number {
     return employee.id;
+  }
+
+  getCardColor(employee: Employee): string {
+    const colors = ['bg-gradient-primary', 'bg-gradient-success', 'bg-gradient-info', 'bg-gradient-warning', 'bg-gradient-danger'];
+    const index = this.employees.indexOf(employee) % colors.length;
+    return colors[index];
   }
 }

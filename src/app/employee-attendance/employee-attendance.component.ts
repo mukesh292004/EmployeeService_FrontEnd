@@ -45,7 +45,7 @@ export class EmployeeAttendanceComponent implements OnInit {
   public weekLineChartOptions: ChartOptions<'line'> = {
     responsive: true,
     plugins: {
-      legend: { display: false }
+      legend: { display: false } // Hide legend for line chart legend means the label for the line
     },
     elements: {
       line: {
@@ -62,7 +62,7 @@ export class EmployeeAttendanceComponent implements OnInit {
         hoverBorderWidth: 3
       }
     },
-    scales: {
+    scales: { // Configure scales for line chart  ex x and y axes
       x: {
         grid: { display: false },
         ticks: { color: '#00ff00' }
@@ -117,7 +117,8 @@ export class EmployeeAttendanceComponent implements OnInit {
   constructor(private userService: UserService) {}
 
   fetchAttendanceHistory(): void {
-    this.userService.getAttendanceHistory(this.userId).subscribe({
+    this.userService.getAttendanceHistory(this.userId).subscribe({ //subscribe means to listen to the observable returned by getAttendanceHistory
+      // observable is a stream of data that can be subscribed to  it is like a promise but can emit multiple values over time
       next: (data) => {
         this.attendanceHistory = data;
         this.updateTodayStatus();
@@ -188,12 +189,15 @@ export class EmployeeAttendanceComponent implements OnInit {
   calculateWeeklyHours(): void {
     const now = new Date();
     const startOfWeek = new Date(now);
-    startOfWeek.setDate(now.getDate() - now.getDay() + 1);
+    startOfWeek.setDate(now.getDate() - now.getDay() + 1);// it sets the date to the first day of the week (Monday) by calculating the difference between the current day and Monday
     startOfWeek.setHours(0, 0, 0, 0);
 
     const endOfWeek = new Date(startOfWeek);
     endOfWeek.setDate(startOfWeek.getDate() + 4);
-    endOfWeek.setHours(23, 59, 59, 999);
+    endOfWeek.setHours(23, 59, 59, 999); //
+    // what is promise and observable in angular
+    // promise is a single value that can be resolved or rejected once, while observable is a stream of values that can emit multiple values over time
+    // both are used to handle asynchronous operations in Angular, but observables are more powerful and flexible as they can be cancelled, retried, and transformed using operators
 
     this.weeklyHours = this.attendanceHistory
       .filter(r => {
@@ -209,7 +213,9 @@ export class EmployeeAttendanceComponent implements OnInit {
     const monday = new Date(today);
     monday.setDate(today.getDate() - today.getDay() + 1);
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 5; i++) { // Loop through the week days (Monday to Friday)
+      if (i > 4) break; // Only process Monday to Friday
+
       const day = new Date(monday);
       day.setDate(monday.getDate() + i);
       const dayISO = day.toISOString().slice(0, 10);
@@ -217,18 +223,18 @@ export class EmployeeAttendanceComponent implements OnInit {
       this.weekChartData[i] = record && record.workHours ? record.workHours : 0;
     }
 
-    this.weekBarChartData = {
-      labels: this.weekDays,
+    this.weekBarChartData = { //this is the data for the bar chart
+      labels: this.weekDays, // Labels for the bar chart
       datasets: [
         {
-          data: [...this.weekChartData],
+          data: [...this.weekChartData], // ... is used to spread the array into the data property
           label: 'Work Hours',
           backgroundColor: '#007bff'
         }
       ]
     };
 
-    this.weekLineChartData = {
+    this.weekLineChartData = { //this is the data for the line chart
       labels: this.weekDays,
       datasets: [
         {
@@ -402,19 +408,20 @@ export class EmployeeAttendanceComponent implements OnInit {
       }
     });
   }
+  // this function calculates the height of the bar in the bar chart based on the time worked
+  // it takes a time string in the format 'Xh Ym' and returns a percentage height for the bar
+  // calculateBarHeight(time: string): string {
+  //   if (time === '--h --m') return '0%';
 
-  calculateBarHeight(time: string): string {
-    if (time === '--h --m') return '0%';
+  //   const hours = parseInt(time.split('h')[0]);
+  //   const minutes = parseInt(time.split('h')[1].split('m')[0]);
 
-    const hours = parseInt(time.split('h')[0]);
-    const minutes = parseInt(time.split('h')[1].split('m')[0]);
+  //   const totalHours = hours + (minutes / 60);
 
-    const totalHours = hours + (minutes / 60);
+  //   const percentage = (totalHours / 10) * 100;
 
-    const percentage = (totalHours / 10) * 100;
-
-    return `${Math.min(percentage, 100)}%`;
-  }
+  //   return `${Math.min(percentage, 100)}%`;
+  // }
 
   refreshData(): void {
     this.fetchAttendanceHistory();

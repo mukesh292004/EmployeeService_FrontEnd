@@ -1,4 +1,112 @@
-h1{
-    color: red;
-    text-align: center;
+/* Color of the links BEFORE scroll */
+.navbar-scroll .nav-link,
+.navbar-scroll .navbar-toggler-icon,
+.navbar-scroll .navbar-brand {
+  color: #262626;
 }
+
+/* Color of the navbar BEFORE scroll */
+.navbar-scroll {
+  background-color: #FFC017;
+}
+
+/* Color of the links AFTER scroll */
+.navbar-scrolled .nav-link,
+.navbar-scrolled .navbar-toggler-icon,
+.navbar-scroll .navbar-brand {
+  color: #262626;
+}
+
+/* Color of the navbar AFTER scroll */
+.navbar-scrolled {
+  background-color: #fff;
+}
+
+/* An optional height of the navbar AFTER scroll */
+.navbar.navbar-scroll.navbar-scrolled {
+  padding-top: auto;
+  padding-bottom: auto;
+}
+
+/* Navbar Styling */
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  height: 3.5rem;
+}
+
+.navbar .nav-link {
+  color: #fff;
+  transition: color 0.3s;
+}
+
+.navbar .nav-link:hover {
+  color: #ffc107;
+}
+
+.navbar .dropdown-menu {
+  background-color: #343a40;
+  border: none;
+}
+
+.navbar .dropdown-menu .dropdown-item {
+  color: #fff;
+}
+
+.navbar .dropdown-menu .dropdown-item:hover {
+  background-color: #495057;
+  color: #ffc107;
+}
+
+.navbar .rounded-circle {
+  border: 2px solid #ffc107;
+}
+
+.navbar .input-group .form-control {
+  border-right: none;
+}
+
+.navbar .input-group .btn {
+  border-left: none;
+}
+.navbar .rounded-circle {
+    border: 2px solid #ffc107;
+  }
+  
+  .navbar .dropdown-menu {
+    background-color: #343a40;
+    border: none;
+  }
+  
+  .navbar .dropdown-menu .dropdown-item {
+    color: #fff;
+  }
+  
+  .navbar .dropdown-menu .dropdown-item:hover {
+    background-color: #495057;
+    color: #ffc107;
+  }
+  /* Reduce Navbar Height */
+.navbar {
+    padding-top: 0.3rem; /* Reduce top padding */
+    padding-bottom: 0.3rem; /* Reduce bottom padding */
+  }
+  
+  .navbar-brand {
+    font-size: 1.2rem; /* Adjust brand font size */
+    height: auto; /* Remove fixed height */
+  }
+  
+  .navbar-nav .nav-link {
+    font-size: 0.9rem; /* Adjust link font size */
+    padding: 0.4rem 0.75rem; /* Adjust link padding */
+  }
+  
+  .navbar-toggler {
+    padding: 0.25rem 0.5rem; /* Adjust toggle button padding */
+  }
+  
+  .navbar .rounded-circle {
+    height: 25px; /* Adjust avatar size */
+    width: 25px;
+  }

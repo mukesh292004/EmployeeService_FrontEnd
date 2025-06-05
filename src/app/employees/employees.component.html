@@ -1,119 +1,183 @@
-<div class="container mt-3">
-  <h2 class="text-center text-primary mb-4">Employee Management</h2>
-  <div class="text-end mb-3">
-    <button class="btn btn-success" (click)="openAddModal()">
-      <i class="fa-solid fa-plus"></i> Add Employee
-    </button>
-  </div>
-  <table class="table table-dark table-striped">
-    <thead>
-      <tr>
-        <th>Employee ID</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Role</th>
-        <th>Department</th>
-        <th>Contact</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let employee of employees; trackBy: trackById">
-        <td>{{ employee.id }}</td>
-        <td>{{ employee.name | uppercase }}</td>
-        <td>{{ employee.email }}</td>
-        <td>{{ employee.role }}</td>
-        <td>{{ employee.department }}</td>
-        <td>{{ employee.contact }}</td>
-        <td>
-          <button class="btn btn-primary" (click)="openEditModal(employee)">
-            <i class="fa-solid fa-pen-to-square"></i>
-          </button>
-          <button class="btn btn-danger" (click)="deleteEmployee(employee)">
-            <i class="fa-solid fa-trash"></i>
-          </button>
-        </td>
-      </tr>
-      <tr *ngIf="employees.length === 0">
-        <td colspan="7" class="text-center text-primary">There are no records</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+<div class="erp-dashboard">
+  
+  <div class="container-fluid px-4 py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb bg-dark-card p-3 rounded shadow-sm">
+        <li class="breadcrumb-item"><a href="/dashboard" class="text-primary text-decoration-none">Dashboard</a></li>
+        <li class="breadcrumb-item active text-light">Employee Management</li>
+      </ol>
+    </nav>
 
-<div class="modal" [class.show]="isModalOpen" [style.display]="isModalOpen ? 'block' : 'none'">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Edit Employee</h5>
-        <button type="button" class="btn-close" (click)="closeModal()"></button>
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 mb-0 text-light fw-bold">Employee Management</h1>
+        <p class="text-muted mb-0">Manage employee records and details</p>
       </div>
-      <div class="modal-body">
-        <form *ngIf="selectedEmployee">
-          <div class="mb-3">
-            <label for="employeeName" class="form-label">Name</label>
-            <input type="text" id="employeeName" class="form-control" [(ngModel)]="selectedEmployee.name" name="name">
-          </div>
-          <div class="mb-3">
-            <label for="employeeRole" class="form-label">Role</label>
-            <input type="text" id="employeeRole" class="form-control" [(ngModel)]="selectedEmployee.role" name="role">
-          </div>
-          <div class="mb-3">
-            <label for="employeeDepartment" class="form-label">Department</label>
-            <input type="text" id="employeeDepartment" class="form-control" [(ngModel)]="selectedEmployee.department"
-              name="department">
-          </div>
-          <div class="mb-3">
-            <label for="employeeContact" class="form-label">Contact</label>
-            <input type="text" id="employeeContact" class="form-control" [(ngModel)]="selectedEmployee.contact"
-              name="contact">
-          </div>
-        </form>
+      <div>
+        <button class="btn btn-success btn-sm" (click)="openAddModal()">
+          <i class="fa-solid fa-plus"></i> Add Employee
+        </button>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
-        <button type="button" class="btn btn-primary" (click)="updateEmployee()">Save changes</button>
+    </div>
+
+    <div class="employee-slider position-relative py-4">
+      <!-- Left Navigation Button -->
+      <button class="btn btn-outline-light btn-sm position-absolute start-0 top-50 translate-middle-y" (click)="previousEmployee()">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+    
+      <!-- Employee Cards -->
+      <div class="row g-4 justify-content-center mx-2">
+        <div class="col-md-4 col-lg-3" *ngFor="let employee of visibleEmployees">
+          <div class="kpi-card shadow-lg rounded" [ngClass]="getCardColor(employee)">
+            <div class="card-body text-center p-2">
+              <div class="icon-wrapper mb-3">
+                <i class="fas fa-user-circle fa-4x text-white"></i>
+              </div>
+              <h6 class="card-title text-white mb-2">{{ employee.name }}</h6>
+              <p class="card-text text-white-50 mb-3">{{ employee.role }}</p>
+              <button class="btn btn-sm text-white" [ngClass]="getCardColor(employee)" (click)="openEditModal(employee)">
+                Profile Details
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <!-- Right Navigation Button -->
+      <button class="btn btn-outline-light btn-sm position-absolute end-0 top-50 translate-middle-y" (click)="nextEmployee()">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <!-- Employee Table with Pagination -->
+    <div class="erp-card mt-4">
+      <div class="card-header">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-users me-2 text-primary"></i>
+          Employee List
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-dark table-striped">
+            <thead>
+              <tr>
+                <th>Employee ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Contact</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let employee of paginatedEmployees; trackBy: trackById">
+                <td>{{ employee.id }}</td>
+                <td>{{ employee.name | uppercase }}</td>
+                <td>{{ employee.email }}</td>
+                <td>{{ employee.role }}</td>
+                <td>{{ employee.department }}</td>
+                <td>{{ employee.contact }}</td>
+                <td>
+                  <button class="btn btn-primary btn-sm" (click)="openEditModal(employee)">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                  </button>
+                  <button class="btn btn-danger btn-sm" (click)="deleteEmployee(employee)">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngIf="paginatedEmployees.length === 0">
+                <td colspan="7" class="text-center text-primary">There are no records</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- Pagination Controls -->
+        <div class="d-flex justify-content-center mt-3">
+          <button class="btn btn-outline-primary btn-sm me-2" [disabled]="currentPage === 1" (click)="previousPage()">Previous</button>
+          <button class="btn btn-outline-primary btn-sm" [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="modal" [class.show]="isAddModalOpen" [style.display]="isAddModalOpen ? 'block' : 'none'">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Add Employee</h5>
-        <button type="button" class="btn-close" (click)="closeAddModal()"></button>
+  <!-- Edit Employee Modal -->
+  <div class="modal" [class.show]="isModalOpen" [style.display]="isModalOpen ? 'block' : 'none'">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow-lg rounded">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">Edit Employee</h5>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+          <form *ngIf="selectedEmployee">
+            <div class="mb-3">
+              <label for="employeeName" class="form-label">Name</label>
+              <input type="text" id="employeeName" class="form-control" [(ngModel)]="selectedEmployee.name" name="name">
+            </div>
+            <div class="mb-3">
+              <label for="employeeRole" class="form-label">Role</label>
+              <input type="text" id="employeeRole" class="form-control" [(ngModel)]="selectedEmployee.role" name="role">
+            </div>
+            <div class="mb-3">
+              <label for="employeeDepartment" class="form-label">Department</label>
+              <input type="text" id="employeeDepartment" class="form-control" [(ngModel)]="selectedEmployee.department" name="department">
+            </div>
+            <div class="mb-3">
+              <label for="employeeContact" class="form-label">Contact</label>
+              <input type="text" id="employeeContact" class="form-control" [(ngModel)]="selectedEmployee.contact" name="contact">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+          <button type="button" class="btn btn-primary" (click)="updateEmployee()">Save changes</button>
+        </div>
       </div>
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="newEmployeeName" class="form-label">Name</label>
-            <input type="text" id="newEmployeeName" class="form-control" [(ngModel)]="newEmployee.name" name="name">
-          </div>
-          <div class="mb-3">
-            <label for="newEmployeeEmail" class="form-label">Email</label>
-            <input type="email" id="newEmployeeEmail" class="form-control" [(ngModel)]="newEmployee.email" name="email">
-          </div>
-          <div class="mb-3">
-            <label for="newEmployeeRole" class="form-label">Role</label>
-            <input type="text" id="newEmployeeRole" class="form-control" [(ngModel)]="newEmployee.role" name="role">
-          </div>
-          <div class="mb-3">
-            <label for="newEmployeeDepartment" class="form-label">Department</label>
-            <input type="text" id="newEmployeeDepartment" class="form-control" [(ngModel)]="newEmployee.department"
-              name="department">
-          </div>
-          <div class="mb-3">
-            <label for="newEmployeeContact" class="form-label">Contact</label>
-            <input type="text" id="newEmployeeContact" class="form-control" [(ngModel)]="newEmployee.contact"
-              name="contact">
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="closeAddModal()">Close</button>
-        <button type="button" class="btn btn-success" (click)="addEmployee()">Add Employee</button>
+    </div>
+  </div>
+
+  <!-- Add Employee Modal -->
+  <div class="modal" [class.show]="isAddModalOpen" [style.display]="isAddModalOpen ? 'block' : 'none'">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow-lg rounded">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title">Add Employee</h5>
+          <button type="button" class="btn-close" (click)="closeAddModal()"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="newEmployeeName" class="form-label">Name</label>
+              <input type="text" id="newEmployeeName" class="form-control" [(ngModel)]="newEmployee.name" name="name">
+            </div>
+            <div class="mb-3">
+              <label for="newEmployeeEmail" class="form-label">Email</label>
+              <input type="email" id="newEmployeeEmail" class="form-control" [(ngModel)]="newEmployee.email" name="email">
+            </div>
+            <div class="mb-3">
+              <label for="newEmployeeRole" class="form-label">Role</label>
+              <input type="text" id="newEmployeeRole" class="form-control" [(ngModel)]="newEmployee.role" name="role">
+            </div>
+            <div class="mb-3">
+              <label for="newEmployeeDepartment" class="form-label">Department</label>
+              <input type="text" id="newEmployeeDepartment" class="form-control" [(ngModel)]="newEmployee.department" name="department">
+            </div>
+            <div class="mb-3">
+              <label for="newEmployeeContact" class="form-label">Contact</label>
+              <input type="text" id="newEmployeeContact" class="form-control" [(ngModel)]="newEmployee.contact" name="contact">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeAddModal()">Close</button>
+          <button type="button" class="btn btn-success" (click)="addEmployee()">Add Employee</button>
+        </div>
       </div>
     </div>
   </div>

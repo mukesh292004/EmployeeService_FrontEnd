@@ -27,10 +27,13 @@ export class UserService {
 
         // Decode the JWT token to extract user role and user ID
         const decodedToken: any = jwtDecode(response);
+        console.log("Decoded Token:", decodedToken);
+
         sessionStorage.setItem('userRole', decodedToken.roles);
         sessionStorage.setItem('userId', decodedToken.empid);
+        sessionStorage.setItem('userName', decodedToken.sub);
 
-        return { token: response, role: decodedToken.role, id: decodedToken.id };
+        return { token: response, role: decodedToken.roles, id: decodedToken.empid };
       }),
       catchError(error => {
         console.error("Login failed", error);
@@ -300,7 +303,118 @@ public applyLeave(leave: any): Observable<any> {
     );
   }
 
+  
+  // Approve a shift swap between two employees
+  public approveSwap(requestId1: number, requestId2: number): Observable<string> {
+    return this.httpClient.post<string>(`http://localhost:9090/shifts/approveSwap/${requestId1}/${requestId2}`, {}).pipe(
+      map(response => {
+        console.log('Swap approved successfully:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Failed to approve swap:', error);
+        return throwError(() => new Error('Failed to approve swap'));
+      })
+    );
+  }
 
+  // Reject a shift swap request
+  public rejectSwap(shiftId: number): Observable<string> {
+    return this.httpClient.post<string>(`http://localhost:9090/shifts/rejectSwap/${shiftId}`, {}).pipe(
+      map(response => {
+        console.log('Swap rejected successfully', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Failed to reject swap', error);
+        return throwError(() => new Error('Failed to reject swap'));
+      })
+    );
+  }
+
+  // Save a new shift
+  public saveShift(shift: any): Observable<string> {
+    return this.httpClient.post(`http://localhost:9090/shifts/save`, shift, { responseType: 'text' }).pipe(
+      map(response => {
+        console.log('Shift saved successfully:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Failed to save shift:', error);
+        return throwError(() => new Error('Failed to save shift'));
+      })
+    );
+  }
+
+  // Delete a shift by ID
+  public deleteShift(shiftId: number): Observable<string> {
+    return this.httpClient.delete<string>(`http://localhost:9090/shifts/delete/${shiftId}`).pipe(
+      map(response => {
+        console.log('Shift deleted successfully', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Failed to delete shift', error);
+        return throwError(() => new Error('Failed to delete shift'));
+      })
+    );
+  }
+
+  // Fetch all shifts
+  public findAllShifts(): Observable<any[]> {
+    return this.httpClient.get<any[]>(`http://localhost:9090/shifts/findall`).pipe(
+      map(response => {
+        console.log('All shifts fetched successfully', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Failed to fetch all shifts', error);
+        return throwError(() => new Error('Failed to fetch all shifts'));
+      })
+    );
+  }
+
+  // Fetch a shift by ID
+  public findShiftById(shiftId: number): Observable<any> {
+    return this.httpClient.get<any>(`http://localhost:9090/shifts/findById/${shiftId}`).pipe(
+      map(response => {
+        console.log('Shift fetched successfully', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Failed to fetch shift', error);
+        return throwError(() => new Error('Failed to fetch shift'));
+      })
+    );
+  }
+
+  // Request a shift swap
+  public requestSwap(shiftId: number): Observable<string> {
+    return this.httpClient.post<string>(`http://localhost:9090/shifts/requestSwap/${shiftId}`, {}).pipe(
+      map(response => {
+        console.log('Swap request submitted successfully', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Failed to request swap', error);
+        return throwError(() => new Error('Failed to request swap'));
+      })
+    );
+  }
+
+  // Fetch shifts by date
+  public getShiftsByDate(date: string): Observable<any[]> {
+    return this.httpClient.get<any[]>(`http://localhost:9090/shifts/byDate/${date}`).pipe(
+      map(response => {
+        console.log('Shifts fetched successfully', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Failed to fetch shifts by date', error);
+        return throwError(() => new Error('Failed to fetch shifts by date'));
+      })
+    );
+  }
 }
 
 export class UpdateEmployeePayload {

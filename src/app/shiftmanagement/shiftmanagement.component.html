@@ -1,0 +1,143 @@
+<div class="erp-dashboard">
+  <div class="container-fluid px-4 py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb bg-dark-card p-3 rounded shadow-sm">
+        <!-- it need to go to the dashboard -->
+        <!-- <li class="breadcrumb-item"><a href="/da" class="text-primary text-decoration-none">Dashboard</a></li> -->
+        <li class="breadcrumb-item"><a href="/dashboard" class="text-primary text-decoration-none">Dashboard</a></li>
+        <li class="breadcrumb-item active text-light">Shift Management</li>
+      </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 mb-0 text-light fw-bold">Shift Management</h1>
+        <p class="text-muted mb-0">Manage employee shifts by date</p>
+      </div>
+      <div>
+        <input
+          type="date"
+          class="form-control"
+          [(ngModel)]="selectedDate"
+          (change)="fetchShiftsByDate(selectedDate)"
+          [min]="minDate"
+        />
+      </div>
+    </div>
+
+    <!-- KPI Summary Cards -->
+    <div class="row g-3 mb-4">
+      <!-- Unassigned Employees -->
+      <div class="col-xl-4 col-lg-6 col-md-6">
+        <div class="kpi-card bg-gradient-warning">
+          <div class="card-body text-center">
+            <h6 class="card-title text-dark mb-1">Unassigned Employees</h6>
+            <div class="metric-value text-dark">{{ unassignedCount }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Day Shifts -->
+      <div class="col-xl-4 col-lg-6 col-md-6">
+        <div class="kpi-card bg-gradient-primary">
+          <div class="card-body text-center">
+            <h6 class="card-title text-white mb-1">Day Shifts</h6>
+            <div class="metric-value text-white">{{ dayShiftCount }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Night Shifts -->
+      <div class="col-xl-4 col-lg-6 col-md-6">
+        <div class="kpi-card bg-gradient-info">
+          <div class="card-body text-center">
+            <h6 class="card-title text-white mb-1">Night Shifts</h6>
+            <div class="metric-value text-white">{{ nightShiftCount }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Unassigned Employees Table -->
+    <div class="erp-card shadow-sm mb-4">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Unassigned Employees</h5>
+      </div>
+      <div class="card-body">
+        <table class="table table-dark table-hover">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let employee of unassignedEmployees">
+              <td>{{ employee.id }}</td>
+              <td>{{ employee.name }}</td>
+              <td>
+                <button class="btn btn-sm btn-primary" (click)="assignShift(employee.id, 'Day')">Assign Day</button>
+                <button class="btn btn-sm btn-info" (click)="assignShift(employee.id, 'Night')">Assign Night</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Swap Requests Table -->
+    <div class="erp-card shadow-sm">
+      <div class="card-header">
+        <h5 class="card-title mb-0">Swap Requests</h5>
+      </div>
+      <div class="card-body">
+        <table class="table table-dark table-hover">
+          <thead>
+            <tr>
+              <th>Request ID</th>
+              <th>Employee ID</th>
+              <th>Shift Name</th>
+              <th>Shift Date</th>
+              <th>Shift Time</th>
+              <th>Potential Swaps</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let request of swapRequests">
+              <td>{{ request.id }}</td>
+              <td>{{ request.employeeId }}</td>
+              <td>{{ request.name }}</td>
+              <td>{{ request.shiftDate }}</td>
+              <td>{{ request.shiftTime }}</td>
+              <td>
+                <!-- Potential Swap Candidates -->
+                <div *ngFor="let candidate of potentialSwaps">
+                  <input
+                    type="radio"
+                    name="swapWith{{ request.id }}"
+                    [value]="candidate.employeeId"
+                    (change)="selectSwapEmployee(candidate.employeeId)"
+                  />
+                  {{ candidate.employeeId }} - {{ candidate.name }}
+                </div>
+              </td>
+              <td>
+                <button
+                  class="btn btn-sm btn-success"
+                  [disabled]="!selectedSwapEmployeeId"
+                  (click)="approveSwap(request.id, selectedSwapEmployeeId!)"
+                >
+                  Approve
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

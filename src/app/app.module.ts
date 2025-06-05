@@ -1,14 +1,23 @@
-import { ToastrModule } from 'ngx-toastr';
-import 'ngx-toastr/toastr.css'; // Import CSS for toast notifications
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router'; // Import RouterModule
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
-    // ...existing components...
+    AppComponent,
+    LoginComponent // Ensure LoginComponent is declared here
   ],
   imports: [
-    // ...existing modules...
-    ToastrModule.forRoot(), // Add ToastrModule
+    BrowserModule,
+    FormsModule,
+    RouterModule, // Add RouterModule here
+    AppRoutingModule // Ensure AppRoutingModule is added here
   ],
+  providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
