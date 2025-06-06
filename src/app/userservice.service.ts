@@ -11,9 +11,18 @@ export class UserService {
   constructor(private httpClient: HttpClient) { }
   path = "http://localhost:9090/auth/new";
 
-  public registerUser(user: user) {
+  public registerUser(user: user): Observable<string> {
     console.log("UserService: Registering user", user);
-    return this.httpClient.post(this.path, user);
+    return this.httpClient.post(this.path, user, { responseType: 'text' }).pipe(
+      map(response => {
+        console.log("Registration response:", response);
+        return response; // Return the plain text response
+      }),
+      catchError(error => {
+        console.error("Failed to register user:", error);
+        return throwError(() => new Error(error.error.text || 'Failed to register user'));
+      })
+    );
   }
 
   public loginUser(login: login): Observable<any> {
@@ -306,14 +315,14 @@ public applyLeave(leave: any): Observable<any> {
   
   // Approve a shift swap between two employees
   public approveSwap(requestId1: number, requestId2: number): Observable<string> {
-    return this.httpClient.post<string>(`http://localhost:9090/shifts/approveSwap/${requestId1}/${requestId2}`, {}).pipe(
+    return this.httpClient.post(`http://localhost:9090/shifts/approveSwap/${requestId1}/${requestId2}`, {}, { responseType: 'text' }).pipe(
       map(response => {
         console.log('Swap approved successfully:', response);
-        return response;
+        return response; // Return the plain text response
       }),
       catchError(error => {
         console.error('Failed to approve swap:', error);
-        return throwError(() => new Error('Failed to approve swap'));
+        return throwError(() => new Error(error.error.text || 'Failed to approve swap'));
       })
     );
   }
@@ -390,13 +399,13 @@ public applyLeave(leave: any): Observable<any> {
 
   // Request a shift swap
   public requestSwap(shiftId: number): Observable<string> {
-    return this.httpClient.post<string>(`http://localhost:9090/shifts/requestSwap/${shiftId}`, {}).pipe(
+    return this.httpClient.post(`http://localhost:9090/shifts/requestSwap/${shiftId}`, {}, { responseType: 'text' }).pipe(
       map(response => {
-        console.log('Swap request submitted successfully', response);
-        return response;
+        console.log('Swap request submitted successfully:', response);
+        return response; // Return the plain text response
       }),
       catchError(error => {
-        console.error('Failed to request swap', error);
+        console.error('Failed to request swap:', error);
         return throwError(() => new Error('Failed to request swap'));
       })
     );

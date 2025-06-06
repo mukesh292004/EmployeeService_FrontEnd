@@ -1,1 +1,318 @@
-<p>attendancemanagement works!</p>
+<div class="erp-dashboard">
+  <div class="container-fluid px-4 py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb bg-dark-card p-3 rounded shadow-sm">
+        <li class="breadcrumb-item">
+          <a href="/dashboard" class="text-primary text-decoration-none">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item active text-light">Attendance Analytics</li>
+      </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 mb-0 text-light fw-bold">Attendance Service</h1>
+        <p class="text-muted mb-0">Real-time monitoring and analytics dashboard</p>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-primary btn-sm d-flex align-items-center" (click)="refreshData()">
+          <i class="fas fa-sync-alt me-1"></i>Refresh
+        </button>
+      </div>
+    </div>
+
+    <!-- Employee ID Input -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <div class="input-group">
+          <input
+            type="number"
+            class="form-control"
+            placeholder="Enter Employee ID"
+            [(ngModel)]="enteredEmployeeId"
+          />
+          <button class="btn btn-primary" (click)="fetchRecordsForEmployee()">Fetch Records</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI Summary Cards -->
+    <div class="row g-3 mb-4">
+      <!-- Employee ID Card -->
+      <div class="col-xl-2 col-lg-4 col-md-6">
+        <div class="kpi-card bg-gradient-primary">
+          <div class="card-body text-center">
+            <div class="icon-wrapper mb-3">
+              <i class="fas fa-id-badge"></i>
+            </div>
+            <h6 class="card-title text-white mb-1">Employee ID</h6>
+            <div class="metric-value text-white">{{ userId|| 0 }}</div>
+            <div class="metric-change text-white-50">
+              <i class="fas fa-user"></i> Active
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Present Days -->
+      <div class="col-xl-2 col-lg-4 col-md-6">
+        <div class="kpi-card bg-gradient-success">
+          <div class="card-body text-center">
+            <div class="icon-wrapper mb-3">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <h6 class="card-title text-white mb-1">Present Days</h6>
+            <div class="metric-value text-white">{{ monthlyReport.presentDays || 0 }}</div>
+            <div class="metric-change text-white-50">
+              <i class="fas fa-arrow-up"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Absent Days -->
+      <div class="col-xl-2 col-lg-4 col-md-6">
+        <div class="kpi-card bg-gradient-danger">
+          <div class="card-body text-center">
+            <div class="icon-wrapper mb-3">
+              <i class="fas fa-calendar-times"></i>
+            </div>
+            <h6 class="card-title text-white mb-1">Absent Days</h6>
+            <div class="metric-value text-white">{{ monthlyReport.absentDays || 0 }}</div>
+            <div class="metric-change text-white-50">
+              <i class="fas fa-arrow-down"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Average Hours -->
+      <div class="col-xl-2 col-lg-4 col-md-6">
+        <div class="kpi-card bg-gradient-info">
+          <div class="card-body text-center">
+            <div class="icon-wrapper mb-3">
+              <i class="fas fa-clock"></i>
+            </div>
+            <h6 class="card-title text-white mb-1">Avg Hours</h6>
+            <div class="metric-value text-white">{{ monthlyReport.averageWorkingHours || 0 }}h</div>
+            <div class="metric-change text-white-50">
+                <i class="fas fa-clock"></i>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Hours -->
+      <div class="col-xl-2 col-lg-4 col-md-6">
+        <div class="kpi-card bg-gradient-warning">
+          <div class="card-body text-center">
+            <div class="icon-wrapper mb-3">
+              <i class="fas fa-hourglass-half"></i>
+            </div>
+            <h6 class="card-title text-dark mb-1">Total Hours</h6>
+            <div class="metric-value text-dark">{{ monthlyReport.totalworkinghour || 0 }}h</div>
+            <div class="metric-change text-white-50">
+                <i class="fas fa-clock"></i>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Overtime -->
+      <div class="col-xl-2 col-lg-4 col-md-6">
+        <div class="kpi-card bg-gradient-purple">
+          <div class="card-body text-center">
+            <div class="icon-wrapper mb-3">
+              <i class="fas fa-clock-rotate-left"></i>
+            </div>
+            <h6 class="card-title text-white mb-1">Overtime</h6>
+            <div class="metric-value text-white">{{ monthlyReport.overtime }}h</div>
+            <div class="metric-change text-white-50">
+                <i class="fas fa-clock"></i>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Dashboard Content -->
+    <div class="row g-3 mb-4">
+      <!-- Performance Chart -->
+      <div class="col-lg-8">
+        <div class="erp-card h-100">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-chart-line me-2 text-primary"></i>
+              Weekly Performance Trend
+            </h5>
+          </div>
+          <div class="card-body">
+            <apx-chart
+              [series]="apexSeries"
+              [chart]="{type: 'area', height: 300, toolbar: {show: true}, background: 'transparent'}"
+              [xaxis]="apexChartOptions.xaxis"
+              [yaxis]="apexChartOptions.yaxis"
+              [stroke]="{curve: 'smooth', width: 3}"
+              [fill]="{type: 'gradient', gradient: {shadeIntensity: 1, opacityFrom: 0.7, opacityTo: 0.3}}"
+              [dataLabels]="{enabled: false}"
+              [grid]="{borderColor: '#374151', strokeDashArray: 3}"
+              [colors]="['#0d6efd']"
+            ></apx-chart>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pie Chart for Attendance Distribution -->
+      <div class="col-lg-4">
+        <div class="erp-card h-100">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-chart-pie me-2 text-primary"></i>
+              Attendance Distribution
+            </h5>
+          </div>
+          <div class="card-body">
+            <apx-chart
+              [series]="[monthlyReport.presentDays || 0, monthlyReport.absentDays || 0, monthlyReport.overtime || 0]"
+              [chart]="{type: 'pie', height: 300}"
+              [labels]="['Present', 'Absent', 'Overtime']"
+              [colors]="['#28a745', '#dc3545', '#ffc107']"
+              [dataLabels]="{enabled: true}"
+            ></apx-chart>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistics Row -->
+    <div class="row g-3 mb-4">
+      <div class="col-lg-12">
+        <div class="erp-card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-calendar-alt me-2 text-primary"></i>
+              Monthly Overview
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-label">Month Average</div>
+                <div class="stat-value text-primary">{{ monthAvg }}</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">Year Average</div>
+                <div class="stat-value text-success">{{ monthlyReport.yearlyaverage }}</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">1st Fortnight</div>
+                <div class="stat-value text-info">{{ monthlyReport.firstFortnightAvg }}</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">2nd Fortnight</div>
+                <div class="stat-value text-warning">{{ monthlyReport.secondFortnightAvg }}</div>
+              </div>
+            </div>
+
+            <!-- Progress Bars -->
+            <div class="progress-section mt-4">
+              <div class="progress-item mb-3">
+                <div class="d-flex justify-content-between mb-1">
+                  <span class="text-light">Monthly Target</span>
+                  <span class="text-light">{{ monthlyReport.totalHours || 0 }}/200 hrs</span>
+                </div>
+                <div class="progress progress-dark">
+                  <div
+                    class="progress-bar bg-primary"
+                    [style.width.%]="(monthlyReport.totalHours / 200) * 100"
+                  ></div>
+                </div>
+              </div>
+              <div class="progress-item mb-3">
+                <div class="d-flex justify-content-between mb-1">
+                  <span class="text-light">Weekly Target</span>
+                  <span class="text-light">{{ weeklyHours || 0 }}/50 hrs</span>
+                </div>
+                <div class="progress progress-dark">
+                  <div
+                    class="progress-bar bg-success"
+                    [style.width.%]="(weeklyHours / 40) * 100"
+                  ></div>
+                </div>
+              </div>
+              <div class="progress-item">
+                <div class="d-flex justify-content-between mb-1">
+                  <span class="text-light">Overtime</span>
+                  <span class="text-light">{{ monthlyReport.overtime || 0 }} hrs</span>
+                </div>
+                <div class="progress progress-dark">
+                  <div
+                    class="progress-bar bg-warning"
+                    [style.width.%]="monthlyReport.overtime || 0"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Tables -->
+    <div class="row g-3">
+      <div class="col-lg-12">
+        <div class="erp-card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">
+              <i class="fas fa-table me-2 text-primary"></i>
+              Recent Attendance Records
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-dark table-hover">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Clock In</th>
+                    <th>Clock Out</th>
+                    <th>Work Hours</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let record of attendanceHistory.slice(0, 8)">
+                    <td>{{ record.date }}</td>
+                    <td>{{ record.clockIn | date: 'shortTime' }}</td>
+                    <td>{{ record.clockOut | date: 'shortTime' }}</td>
+                    <td>{{ record.workHours }}h</td>
+                    <td>
+                      <span
+                        class="badge"
+                        [ngClass]="{
+                          'bg-success': record.workHours >= 8,
+                          'bg-warning': record.workHours >= 6 && record.workHours < 8,
+                          'bg-danger': record.workHours < 6
+                        }"
+                      >
+                        {{
+                          record.workHours >= 8
+                            ? 'Full Time'
+                            : record.workHours >= 6
+                            ? 'Partial'
+                            : 'Insufficient'
+                        }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

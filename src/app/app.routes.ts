@@ -10,6 +10,7 @@ import { EmployeeShiftComponent } from './shift/shift.component';
 import { ManagerShiftComponent } from './shiftmanagement/shiftmanagement.component';
 import { ManagerlandingpageComponent } from './managerlandingpage/managerlandingpage.component';
 import { AuthGuard } from './auth.guard';
+import { AttendancemanagementComponent } from './attendancemanagement/attendancemanagement.component';
 
 export const routes: Routes = [
     { path: "", canActivate: [AuthGuard], component: LandingPageComponent }, // Default path with AuthGuard
@@ -22,4 +23,6 @@ export const routes: Routes = [
     { path: "shift", canActivate: [AuthGuard], component: EmployeeShiftComponent, data: { roles: ['Employee'] } },
     { path: "shiftmanagement", canActivate: [AuthGuard], component: ManagerShiftComponent, data: { roles: ['Manager'] } },
     { path: "dashboard", canActivate: [AuthGuard], component: ManagerlandingpageComponent, data: { roles: ['Manager'] } },
+    //AttendancemanagementComponent
+    {path : "attendancemanagement", canActivate: [AuthGuard], component: AttendancemanagementComponent, data: { roles: ['Manager'] } },
 ];

@@ -79,7 +79,7 @@
               <td>{{ employee.id }}</td>
               <td>{{ employee.name }}</td>
               <td>
-                <button class="btn btn-sm btn-primary" (click)="assignShift(employee.id, 'Day')">Assign Day</button>
+                <button class="btn btn-sm btn-primary m-1" (click)="assignShift(employee.id, 'Day')">Assign Day</button>
                 <button class="btn btn-sm btn-info" (click)="assignShift(employee.id, 'Night')">Assign Night</button>
               </td>
             </tr>
@@ -116,13 +116,15 @@
               <td>
                 <!-- Potential Swap Candidates -->
                 <div *ngFor="let candidate of potentialSwaps">
-                  <input
-                    type="radio"
-                    name="swapWith{{ request.id }}"
-                    [value]="candidate.employeeId"
-                    (change)="selectSwapEmployee(candidate.employeeId)"
-                  />
-                  {{ candidate.employeeId }} - {{ candidate.name }}
+                  <ng-container *ngIf="candidate.id !== request.id && candidate.name !== request.name && candidate.employeeId !== request.employeeId">
+                    <input
+                      type="radio"
+                      name="swapWith{{ request.id }}"
+                      [value]="candidate.id"
+                      (change)="selectSwapEmployee(candidate.id)"
+                    />
+                    {{ candidate.id }} - {{ candidate.name }}
+                  </ng-container>
                 </div>
               </td>
               <td>
