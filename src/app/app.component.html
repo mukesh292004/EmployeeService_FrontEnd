@@ -30,7 +30,7 @@
           </li>
 
           <!-- Register Link -->
-          <li class="nav-item">
+          <li class="nav-item"*ngIf="!isLoggedIn">
             <a class="nav-link d-flex flex-column text-center" routerLink="/register">
               <i class="fas fa-user-plus fa-lg my-2"></i>
               <span class="small">Register</span>

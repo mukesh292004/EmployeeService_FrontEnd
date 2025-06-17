@@ -117,19 +117,19 @@
         <div class="modal-body">
           <form *ngIf="selectedEmployee">
             <div class="mb-3">
-              <label for="employeeName" class="form-label">Name</label>
+              <label for="employeeName" class="form-label text-dark">Name</label>
               <input type="text" id="employeeName" class="form-control" [(ngModel)]="selectedEmployee.name" name="name">
             </div>
             <div class="mb-3">
-              <label for="employeeRole" class="form-label">Role</label>
+              <label for="employeeRole" class="form-label text-dark ">Role</label>
               <input type="text" id="employeeRole" class="form-control" [(ngModel)]="selectedEmployee.role" name="role">
             </div>
             <div class="mb-3">
-              <label for="employeeDepartment" class="form-label">Department</label>
+              <label for="employeeDepartment" class="form-label text-dark ">Department</label>
               <input type="text" id="employeeDepartment" class="form-control" [(ngModel)]="selectedEmployee.department" name="department">
             </div>
             <div class="mb-3">
-              <label for="employeeContact" class="form-label">Contact</label>
+              <label for="employeeContact" class="form-label text-dark ">Contact</label>
               <input type="text" id="employeeContact" class="form-control" [(ngModel)]="selectedEmployee.contact" name="contact">
             </div>
           </form>
@@ -146,37 +146,37 @@
   <div class="modal" [class.show]="isAddModalOpen" [style.display]="isAddModalOpen ? 'block' : 'none'">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content shadow-lg rounded">
-        <div class="modal-header bg-success text-white">
+        <div class="modal-header bg-primary text-white">
           <h5 class="modal-title">Add Employee</h5>
-          <button type="button" class="btn-close" (click)="closeAddModal()"></button>
+          <button type="button" class="btn-close text-white" (click)="closeAddModal()"></button>
         </div>
         <div class="modal-body">
           <form>
             <div class="mb-3">
-              <label for="newEmployeeName" class="form-label">Name</label>
-              <input type="text" id="newEmployeeName" class="form-control" [(ngModel)]="newEmployee.name" name="name">
+              <label for="newEmployeeName" class="form-label text-dark">Name</label>
+              <input type="text" id="newEmployeeName" class="form-control border-primary" [(ngModel)]="newEmployee.name" name="name">
             </div>
             <div class="mb-3">
-              <label for="newEmployeeEmail" class="form-label">Email</label>
-              <input type="email" id="newEmployeeEmail" class="form-control" [(ngModel)]="newEmployee.email" name="email">
+              <label for="newEmployeeEmail" class="form-label text-dark">Email</label>
+              <input type="email" id="newEmployeeEmail" class="form-control border-primary" [(ngModel)]="newEmployee.email" name="email">
             </div>
             <div class="mb-3">
-              <label for="newEmployeeRole" class="form-label">Role</label>
-              <input type="text" id="newEmployeeRole" class="form-control" [(ngModel)]="newEmployee.role" name="role">
+              <label for="newEmployeeRole" class="form-label text-dark">Role</label>
+              <input type="text" id="newEmployeeRole" class="form-control border-primary" [(ngModel)]="newEmployee.role" name="role">
             </div>
             <div class="mb-3">
-              <label for="newEmployeeDepartment" class="form-label">Department</label>
-              <input type="text" id="newEmployeeDepartment" class="form-control" [(ngModel)]="newEmployee.department" name="department">
+              <label for="newEmployeeDepartment" class="form-label text-dark">Department</label>
+              <input type="text" id="newEmployeeDepartment" class="form-control border-primary" [(ngModel)]="newEmployee.department" name="department">
             </div>
             <div class="mb-3">
-              <label for="newEmployeeContact" class="form-label">Contact</label>
-              <input type="text" id="newEmployeeContact" class="form-control" [(ngModel)]="newEmployee.contact" name="contact">
+              <label for="newEmployeeContact" class="form-label text-dark">Contact</label>
+              <input type="text" id="newEmployeeContact" class="form-control border-primary" [(ngModel)]="newEmployee.contact" name="contact">
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="closeAddModal()">Close</button>
-          <button type="button" class="btn btn-success" (click)="addEmployee()">Add Employee</button>
+          <button type="button" class="btn btn-outline-secondary" (click)="closeAddModal()">Close</button>
+          <button type="button" class="btn btn-outline-primary" (click)="addEmployee()">Add Employee</button>
         </div>
       </div>
     </div>

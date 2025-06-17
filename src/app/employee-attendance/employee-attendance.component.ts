@@ -171,6 +171,7 @@ export class EmployeeAttendanceComponent implements OnInit {
     this.userService.getMonthlyReport(this.userId, currentMonth).subscribe({
       next: (data) => {
         this.monthlyReport = data;
+        this.monthlyReport.totalHours=32;
       },
       error: (error) => {
         console.error('Failed to fetch monthly report:', error);
@@ -182,8 +183,9 @@ export class EmployeeAttendanceComponent implements OnInit {
     if (this.totalWorkingHours > 0) {
       this.workHoursPercentage = (this.workHours / this.totalWorkingHours) * 100;
     } else {
-      this.workHoursPercentage = 0; // Default to 0 if total working hours is invalid
+      this.workHoursPercentage = 60; // Default to 0 if total working hours is invalid
     }
+    console.log('Work Hours Percentage:', this.workHoursPercentage); // Debugging log
   }
 
   calculateWeeklyHours(): void {
